@@ -1,5 +1,6 @@
 package com.example.service;
 
+import com.example.interceptor.StarfleetAudit;
 import com.example.model.Channel;
 import com.example.model.StarfleetMessage;
 import com.example.model.TransmissionSentEvent;
@@ -14,6 +15,7 @@ import jakarta.inject.Inject;
 
 import java.time.Instant;
 
+@StarfleetAudit
 @ApplicationScoped
 public class StarfleetCommunicationService implements CommunicationService {
 
