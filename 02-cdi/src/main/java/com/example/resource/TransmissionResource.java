@@ -43,6 +43,19 @@ public class TransmissionResource {
                 shipContext.getShipName(), shipContext.getOfficerOnDuty(), recipient, channel);
     }
 
+    @GET
+    @Path("/broadcast")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String broadcast(
+            @QueryParam("recipient") @DefaultValue("All ships") String recipient,
+            @QueryParam("message") @DefaultValue("No message") String message) {
+
+        communicationService.broadcast(new StarfleetMessage(recipient, message, Priority.ROUTINE));
+
+        return String.format("Broadcast sent to all active channels.%n  To:      %s%n  Message: %s%n",
+                recipient, message);
+    }
+
     // This endpoint reads ShipContext WITHOUT setting it first.
     // With @Singleton scope: returns the ship name left over from the last request.
     // With @RequestScoped scope: always returns null — each request starts fresh.

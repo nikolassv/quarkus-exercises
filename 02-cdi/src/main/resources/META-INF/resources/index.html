@@ -91,6 +91,21 @@
 </div>
 
 <div class="section">
+    <h2>Broadcast</h2>
+    <p>
+        Broadcasts to <em>all</em> active <code>MessageSender</code> beans via <code>Instance&lt;MessageSender&gt;</code>.
+    </p>
+    <form id="broadcastForm">
+        <label for="broadcastRecipient">Recipient</label>
+        <input id="broadcastRecipient" name="recipient" value="All ships in sector">
+        <label for="broadcastMessage">Message</label>
+        <input id="broadcastMessage" name="message" value="Red alert. All hands to battle stations.">
+        <button type="submit">&#x1f4e1; Broadcast</button>
+    </form>
+    <pre id="broadcastResult">(response will appear here)</pre>
+</div>
+
+<div class="section">
     <h2>Inspect Ship Context</h2>
     <p>
         This calls <code>GET /transmit/context</code> <em>without</em> setting anything first.<br>
@@ -106,6 +121,13 @@
         const params = new URLSearchParams(new FormData(e.target));
         const res = await fetch('/transmit?' + params);
         document.getElementById('transmitResult').textContent = await res.text();
+    });
+
+    document.getElementById('broadcastForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const params = new URLSearchParams(new FormData(e.target));
+        const res = await fetch('/transmit/broadcast?' + params);
+        document.getElementById('broadcastResult').textContent = await res.text();
     });
 
     document.getElementById('checkContext').addEventListener('click', async () => {
