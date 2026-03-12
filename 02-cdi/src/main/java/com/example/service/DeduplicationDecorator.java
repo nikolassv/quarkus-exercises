@@ -5,7 +5,6 @@ import com.example.model.StarfleetMessage;
 import jakarta.annotation.Priority;
 import jakarta.decorator.Decorator;
 import jakarta.decorator.Delegate;
-import jakarta.enterprise.inject.Vetoed;
 import jakarta.inject.Inject;
 import jakarta.interceptor.Interceptor;
 import org.jboss.logging.Logger;
@@ -18,12 +17,6 @@ import java.util.Set;
 // recipient over the same channel more than once, subsequent attempts are dropped.
 //
 // TODO: Turn this into a CDI decorator so it transparently wraps CommunicationService.
-//       A decorator intercepts every call to the decorated bean and can add behaviour around it.
-//       Steps:
-//         1. Remove @Vetoed (it currently prevents CDI from seeing this class).
-//         2. Add @Decorator and @Priority(Interceptor.Priority.APPLICATION) on the class.
-//         3. Annotate the delegate field with @Inject and @Delegate.
-//
 // @Vetoed is a temporary placeholder — remove it as part of the task.
 @Decorator
 @Priority(Interceptor.Priority.APPLICATION)
