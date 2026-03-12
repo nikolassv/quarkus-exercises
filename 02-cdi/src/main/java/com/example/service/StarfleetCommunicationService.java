@@ -22,12 +22,8 @@ public class StarfleetCommunicationService implements CommunicationService {
     @WarpBeacon
     MessageSender warpBeaconSender;
 
-    @Inject
     @Any
     Instance<MessageSender> allSenders;
-
-    @Inject
-    ShipContext shipContext;
 
     @Override
     public void transmit(StarfleetMessage message, Channel channel) {
