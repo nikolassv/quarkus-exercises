@@ -2,7 +2,12 @@ package com.example.service;
 
 import com.example.model.Channel;
 import com.example.model.StarfleetMessage;
+import jakarta.annotation.Priority;
+import jakarta.decorator.Decorator;
+import jakarta.decorator.Delegate;
 import jakarta.enterprise.inject.Vetoed;
+import jakarta.inject.Inject;
+import jakarta.interceptor.Interceptor;
 import org.jboss.logging.Logger;
 
 import java.util.Collections;
@@ -20,12 +25,15 @@ import java.util.Set;
 //         3. Annotate the delegate field with @Inject and @Delegate.
 //
 // @Vetoed is a temporary placeholder — remove it as part of the task.
-@Vetoed
+@Decorator
+@Priority(Interceptor.Priority.APPLICATION)
 public class DeduplicationDecorator implements CommunicationService {
 
     private static final Logger LOG = Logger.getLogger(DeduplicationDecorator.class);
 
     // TODO: This field must become the CDI delegate injection point.
+    @Inject
+    @Delegate
     CommunicationService delegate;
 
     private final Set<String> recentTransmissions = Collections.synchronizedSet(new HashSet<>());

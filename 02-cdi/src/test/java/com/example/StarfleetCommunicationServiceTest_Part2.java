@@ -4,6 +4,7 @@ import com.example.log.StarfleetCommunicationsLog;
 import com.example.model.Channel;
 import com.example.model.StarfleetMessage;
 import com.example.model.StarfleetMessage.Priority;
+import com.example.sender.Subspace;
 import com.example.sender.SubspaceSender;
 import com.example.service.CommunicationService;
 import io.quarkus.test.InjectMock;
@@ -22,7 +23,7 @@ class StarfleetCommunicationServiceTest_Part2 {
     @Inject
     CommunicationService service;
 
-    @InjectMock
+    @InjectMock @Subspace
     SubspaceSender subspaceSender;
 
     @Inject
