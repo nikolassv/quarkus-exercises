@@ -25,12 +25,12 @@ configured. Your mission: get all tests green before the Romulans notice.
 
 ## Tasks
 
-Work through these roughly in order. Tasks 1–5 have failing tests. Tasks 6–8 have no
+Work through these roughly in order. Some Tasks have failing tests. Others have no
 automated test — verify them by running the application and inspecting the logs.
 
 ---
 
-### 1. Resolve the ambiguous sender injection
+### Resolve the ambiguous sender injection (Part 1)
 
 `SubspaceSender` and `WarpBeaconSender` both implement `MessageSender`. CDI cannot decide
 which one to inject when a `MessageSender` is requested — it will refuse to start with an
@@ -44,7 +44,7 @@ Create qualifier annotations (one per sender) and apply them to:
 
 ---
 
-### 2. Implement `broadcast()`
+### Implement `broadcast()` (Part 1)
 
 `StarfleetCommunicationService.broadcast()` should send the message to every available
 `MessageSender`. A CDI `Instance<MessageSender>` is already injected — use it.
@@ -53,45 +53,7 @@ Create qualifier annotations (one per sender) and apply them to:
 
 ---
 
-### 3. Fire a `TransmissionSentEvent`
-
-After every `transmit()` call, a `TransmissionSentEvent` should be fired so other
-components can react. The `TransmissionSentEvent` record and `transmissionEvent` injection
-point are not set up yet — add them yourself.
-
-**Failing test:** `transmitFiresEventAndUpdatesLog` (together with task 4)
-
----
-
-### 4. Observe the `TransmissionSentEvent`
-
-`StarfleetCommunicationsLog.onTransmission()` already contains the logging logic, but it
-is never called because one annotation is missing from its parameter.
-
-**Failing test:** `transmitFiresEventAndUpdatesLog`
-
----
-
-### 5. Activate the `DeduplicationDecorator`
-
-`DeduplicationDecorator` already contains the deduplication logic but is excluded from CDI
-with `@Vetoed`. Read the TODO comment in the class and turn it into a proper CDI decorator.
-
-**Failing test:** `duplicateTransmissionIsSentOnlyOnce`
-
----
-
-### 6. Activate the `StarfleetAuditInterceptor`
-
-`StarfleetAuditInterceptor` has the audit logic in place but is not wired as an interceptor.
-Add the required CDI annotations to make it intercept every method marked with `@StarfleetAudit`.
-
-**Verify:** start the application (`./mvnw quarkus:dev`) and open http://localhost:8080.
-Send a transmission via the console — you should see `[STARFLEET AUDIT]` lines in the log.
-
----
-
-### 7. Fix the scope of `ShipContext`
+### Fix the scope of `ShipContext` (Part 1)
 
 `ShipContext` holds per-request state but its current scope causes all requests to share the
 same instance. Read the TODO comment, identify the problem, and pick the correct scope.
@@ -102,7 +64,7 @@ into the unrelated context request. After the fix, **Check context** always retu
 
 ---
 
-### 8. Activate `HolodeckSimulatedSender` in dev mode
+### Activate `HolodeckSimulatedSender` in dev mode (Part 1)
 
 `HolodeckSimulatedSender` is a fully functional test double that prints transmissions to
 stdout instead of sending real signals. Add the annotation that restricts it to the `dev`
@@ -110,6 +72,44 @@ build profile so it does not appear in production.
 
 Verify: run `./mvnw quarkus:dev` — `HolodeckSimulatedSender` should appear among the senders
 when broadcasting.
+
+---
+
+### Fire a `TransmissionSentEvent` (Part 2)
+
+After every `transmit()` call, a `TransmissionSentEvent` should be fired so other
+components can react. The `TransmissionSentEvent` record and `transmissionEvent` injection
+point are not set up yet — add them yourself.
+
+**Failing test:** `transmitFiresEventAndUpdatesLog` (together with task 4)
+
+---
+
+### Observe the `TransmissionSentEvent` (Part 2)
+
+`StarfleetCommunicationsLog.onTransmission()` already contains the logging logic, but it
+is never called because one annotation is missing from its parameter.
+
+**Failing test:** `transmitFiresEventAndUpdatesLog`
+
+---
+
+### Activate the `DeduplicationDecorator` (Part 2)
+
+`DeduplicationDecorator` already contains the deduplication logic but is excluded from CDI
+with `@Vetoed`. Read the TODO comment in the class and turn it into a proper CDI decorator.
+
+**Failing test:** `duplicateTransmissionIsSentOnlyOnce`
+
+---
+
+### Activate the `StarfleetAuditInterceptor` (Part 2)
+
+`StarfleetAuditInterceptor` has the audit logic in place but is not wired as an interceptor.
+Add the required CDI annotations to make it intercept every method marked with `@StarfleetAudit`.
+
+**Verify:** start the application (`./mvnw quarkus:dev`) and open http://localhost:8080.
+Send a transmission via the console — you should see `[STARFLEET AUDIT]` lines in the log.
 
 ---
 
@@ -127,20 +127,3 @@ sending transmissions and observing the interceptor and scope behaviour in the l
 ```bash
 ./mvnw test
 ```
-
-All five tests fail on the skeleton. Fix them in order — each task unlocks the next.
-
-<details>
-<summary>Hints</summary>
-
-- **Task 1:** A CDI qualifier is a `@Retention(RUNTIME)` annotation meta-annotated with
-  `@Qualifier`. Create one for each channel and place it on the bean class and on the
-  `@Inject` field.
-- **Task 2:** `allSenders.forEach(sender -> sender.send(message))`.
-- **Task 3:** Inject `Event<TransmissionSentEvent>` and call `transmissionEvent.fire(new TransmissionSentEvent(...))`.
-- **Task 4:** The missing annotation is `@Observes` on the `event` parameter.
-- **Task 5:** `@Decorator`, `@Priority(Interceptor.Priority.APPLICATION)`, `@Inject @Delegate`.
-- **Task 6:** `@Interceptor`, `@StarfleetAudit`, `@Priority`, `@AroundInvoke`.
-- **Task 8:** `@IfBuildProfile` lives in `io.quarkus.arc.profile`.
-
-</details>

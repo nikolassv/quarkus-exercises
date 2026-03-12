@@ -40,7 +40,6 @@ public class StarfleetCommunicationService implements CommunicationService {
     @Override
     public void broadcast(StarfleetMessage message) {
         // TODO: Send the message to all registered MessageSender beans.
-        //       Use the allSenders Instance to iterate over them and call send() on each.
     }
 
     private MessageSender selectSender(Channel channel) {
