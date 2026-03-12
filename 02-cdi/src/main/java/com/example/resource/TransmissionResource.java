@@ -50,7 +50,7 @@ public class TransmissionResource {
             @QueryParam("recipient") @DefaultValue("All ships") String recipient,
             @QueryParam("message") @DefaultValue("No message") String message) {
 
-        communicationService.broadcast(new StarfleetMessage(recipient, message, Priority.ROUTINE));
+        communicationService.broadcast(new StarfleetMessage(recipient, message, Priority.DISTRESS));
 
         return String.format("Broadcast sent to all active channels.%n  To:      %s%n  Message: %s%n",
                 recipient, message);
