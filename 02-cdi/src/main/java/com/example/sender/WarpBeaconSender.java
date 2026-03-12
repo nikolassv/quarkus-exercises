@@ -3,6 +3,7 @@ package com.example.sender;
 import com.example.model.StarfleetMessage;
 import jakarta.enterprise.context.ApplicationScoped;
 
+@WarpBeacon
 @ApplicationScoped
 public class WarpBeaconSender implements MessageSender {
 

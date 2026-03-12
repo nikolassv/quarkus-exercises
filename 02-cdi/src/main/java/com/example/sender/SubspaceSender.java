@@ -3,6 +3,7 @@ package com.example.sender;
 import com.example.model.StarfleetMessage;
 import jakarta.enterprise.context.ApplicationScoped;
 
+@Subspace
 @ApplicationScoped
 public class SubspaceSender implements MessageSender {
 

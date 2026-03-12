@@ -5,6 +5,8 @@ import com.example.interceptor.StarfleetAudit;
 import com.example.model.Channel;
 import com.example.model.StarfleetMessage;
 import com.example.sender.MessageSender;
+import com.example.sender.Subspace;
+import com.example.sender.WarpBeacon;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Any;
 import jakarta.enterprise.inject.Instance;
@@ -14,12 +16,10 @@ import jakarta.inject.Inject;
 @StarfleetAudit
 public class StarfleetCommunicationService implements CommunicationService {
 
-    // TODO: Both fields below are ambiguous — CDI cannot choose between SubspaceSender
-    //       and WarpBeaconSender.
-    @Inject
+    @Subspace
     MessageSender subspaceSender;
 
-    @Inject
+    @WarpBeacon
     MessageSender warpBeaconSender;
 
     @Inject
@@ -39,8 +39,7 @@ public class StarfleetCommunicationService implements CommunicationService {
 
     @Override
     public void broadcast(StarfleetMessage message) {
-        // TODO: Send the message to all registered MessageSender beans.
-        //       Use the allSenders Instance to iterate over them and call send() on each.
+        allSenders.stream().forEach(sender -> sender.send(message));
     }
 
     private MessageSender selectSender(Channel channel) {
