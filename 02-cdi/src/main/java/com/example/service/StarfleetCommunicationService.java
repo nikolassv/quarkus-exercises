@@ -15,9 +15,7 @@ import jakarta.inject.Inject;
 public class StarfleetCommunicationService implements CommunicationService {
 
     // TODO: Both fields below are ambiguous — CDI cannot choose between SubspaceSender
-    //       and WarpBeaconSender since they have no qualifiers yet.
-    //       Create qualifier annotations and apply them to the sender beans and to
-    //       these injection points.
+    //       and WarpBeaconSender.
     @Inject
     MessageSender subspaceSender;
 
