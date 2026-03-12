@@ -1,12 +1,13 @@
 package com.example.sender;
 
 import com.example.model.StarfleetMessage;
+import io.quarkus.arc.profile.IfBuildProfile;
 import jakarta.enterprise.context.ApplicationScoped;
 
 // This sender simulates transmissions locally — useful during development so no real
 // signals are sent. It should only be active in the "dev" build profile.
-// TODO: Add the appropriate Quarkus annotation to activate this bean only in dev mode.
 @ApplicationScoped
+@IfBuildProfile("dev")
 public class HolodeckSimulatedSender implements MessageSender {
 
     @Override

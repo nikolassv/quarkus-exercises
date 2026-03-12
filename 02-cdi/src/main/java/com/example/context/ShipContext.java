@@ -1,12 +1,9 @@
 package com.example.context;
 
-import jakarta.inject.Singleton;
+import jakarta.enterprise.context.RequestScoped;
 
 // ShipContext holds the current starship name and the officer on duty for each transmission request.
-// TODO: The current scope causes all concurrent requests to share the same instance, which means
-//       a transmission from the USS Enterprise would overwrite the context of a simultaneous
-//       transmission from the USS Voyager.
-@Singleton
+@RequestScoped
 public class ShipContext {
 
     private String shipName;

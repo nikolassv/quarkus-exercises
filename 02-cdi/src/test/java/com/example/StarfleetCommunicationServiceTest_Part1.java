@@ -3,7 +3,9 @@ package com.example;
 import com.example.model.Channel;
 import com.example.model.StarfleetMessage;
 import com.example.model.StarfleetMessage.Priority;
+import com.example.sender.Subspace;
 import com.example.sender.SubspaceSender;
+import com.example.sender.WarpBeacon;
 import com.example.sender.WarpBeaconSender;
 import com.example.service.CommunicationService;
 import io.quarkus.test.InjectMock;
@@ -21,10 +23,10 @@ class StarfleetCommunicationServiceTest_Part1 {
     @Inject
     CommunicationService service;
 
-    @InjectMock
+    @InjectMock @Subspace
     SubspaceSender subspaceSender;
 
-    @InjectMock
+    @InjectMock @WarpBeacon
     WarpBeaconSender warpBeaconSender;
 
     // -------------------------------------------------------------------------
