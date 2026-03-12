@@ -1,7 +1,5 @@
 package com.example.service;
 
-import com.example.context.ShipContext;
-import com.example.interceptor.StarfleetAudit;
 import com.example.model.Channel;
 import com.example.model.StarfleetMessage;
 import com.example.sender.MessageSender;
@@ -11,7 +9,6 @@ import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 
 @ApplicationScoped
-@StarfleetAudit
 public class StarfleetCommunicationService implements CommunicationService {
 
     // TODO: Both fields below are ambiguous — CDI cannot choose between SubspaceSender

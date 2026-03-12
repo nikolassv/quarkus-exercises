@@ -106,7 +106,8 @@ with `@Vetoed`. Read the TODO comment in the class and turn it into a proper CDI
 ### Activate the `StarfleetAuditInterceptor` (Part 2)
 
 `StarfleetAuditInterceptor` has the audit logic in place but is not wired as an interceptor.
-Add the required CDI annotations to make it intercept every method marked with `@StarfleetAudit`.
+Add the required CDI annotations to make it intercept every class and method marked with `@StarfleetAudit`.
+Intercept all methods in the `StarfleetCommuniationService`.
 
 **Verify:** start the application (`./mvnw quarkus:dev`) and open http://localhost:8080.
 Send a transmission via the console — you should see `[STARFLEET AUDIT]` lines in the log.

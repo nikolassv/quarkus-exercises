@@ -13,19 +13,12 @@ import java.util.Set;
 // recipient over the same channel more than once, subsequent attempts are dropped.
 //
 // TODO: Turn this into a CDI decorator so it transparently wraps CommunicationService.
-//       A decorator intercepts every call to the decorated bean and can add behaviour around it.
-//       Steps:
-//         1. Remove @Vetoed (it currently prevents CDI from seeing this class).
-//         2. Add @Decorator and @Priority(Interceptor.Priority.APPLICATION) on the class.
-//         3. Annotate the delegate field with @Inject and @Delegate.
-//
 // @Vetoed is a temporary placeholder — remove it as part of the task.
 @Vetoed
 public class DeduplicationDecorator implements CommunicationService {
 
     private static final Logger LOG = Logger.getLogger(DeduplicationDecorator.class);
 
-    // TODO: This field must become the CDI delegate injection point.
     CommunicationService delegate;
 
     private final Set<String> recentTransmissions = Collections.synchronizedSet(new HashSet<>());
