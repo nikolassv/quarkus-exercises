@@ -1,5 +1,7 @@
 # 02 — CDI: Starfleet Communications
 
+![Starfleet Communications](starfleet-communications.png "Starfleet Needs You!")
+
 ## Stardate 44001.4
 
 Starfleet Command has tasked you with completing the `StarfleetCommunicationService` — the
@@ -9,6 +11,7 @@ Regulation 47, and suppress duplicate distress signals to prevent comm-channel s
 
 The codebase is partially implemented. Several components are incomplete or incorrectly
 configured. Your mission: get all tests green before the Romulans notice.
+
 
 ## What this project demonstrates
 
