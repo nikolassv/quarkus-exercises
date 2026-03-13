@@ -16,3 +16,4 @@ target/
 
 # Quarkus
 .quarkus/
+/03-config-logging/log/

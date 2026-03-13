@@ -33,8 +33,31 @@ import io.smallrye.config.ConfigMapping;
  *   Pressure pressure();
  * </pre>
  */
+@ConfigMapping(prefix = "engine")
 public interface EngineConfig {
-    // TODO: add @ConfigMapping(prefix = "engine") above the interface declaration
-    // TODO: add method declarations for name, location, displayName,
-    //       temperatureMax, and the nested Pressure and Fuel interfaces
+    String location();
+    String name();
+    String displayName();
+    String managementContact();
+    String broadcastStation();
+    String maintenanceAuthority();
+
+    PressureConfiguration pressure();
+    FuelConfiguration fuel();
+    TemperatureLimits temperature();
+
+    interface PressureConfiguration {
+        double min();
+        double max();
+        double emergencyThreshold();
+    }
+
+    interface FuelConfiguration {
+        String type();
+        double flowRate();
+    }
+
+    interface TemperatureLimits {
+        int max();
+    }
 }

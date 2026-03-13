@@ -1,45 +1,20 @@
 package com.example.engine;
 
+import com.example.config.EngineConfig;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.logging.Logger;
 
 /**
  * Main control service for the Great Aetheric Engine.
- *
- * <p>Demonstrates {@link ConfigProperty} injection: each field is bound to a single
- * named property from {@code application.properties}.
- *
- * <p>After completing Task 6 you will replace these individual fields with a single
- * {@code @Inject EngineConfig engineConfig} injection point (a ConfigMapping), which
- * groups all {@code engine.*} properties into one strongly-typed object.
  */
 @ApplicationScoped
 public class AetherEngineService {
 
     private static final Logger LOG = Logger.getLogger(AetherEngineService.class);
 
-    @ConfigProperty(name = "engine.display-name")
-    String displayName;
-
-    @ConfigProperty(name = "engine.name")
-    String name;
-
-    @ConfigProperty(name = "engine.location")
-    String location;
-
-    @ConfigProperty(name = "engine.pressure.min")
-    int pressureMin;
-
-    @ConfigProperty(name = "engine.pressure.max")
-    int pressureMax;
-
-    @ConfigProperty(name = "engine.pressure.emergency-threshold")
-    int emergencyThreshold;
-
-    @ConfigProperty(name = "engine.fuel.type")
-    String fuelType;
+    @Inject
+    EngineConfig engineConfig;
 
     @Inject
     FuelRegulator fuelRegulator;
@@ -48,13 +23,13 @@ public class AetherEngineService {
      * Returns the current engine status based on configuration validity.
      */
     public String getStatus() {
-        if (pressureMin >= pressureMax) {
+        if (engineConfig.pressure().min() >= engineConfig.pressure().max()) {
             LOG.errorf("CRITICAL: Pressure configuration invalid — min (%d) >= max (%d). Engine halted.",
-                    pressureMin, pressureMax);
+                    engineConfig.pressure().min(), engineConfig.pressure().max());
             return "HALTED";
         }
         LOG.infof("Engine '%s' is operational. Pressure range: %d\u2013%d bar.",
-                displayName, pressureMin, pressureMax);
+                engineConfig.displayName(), engineConfig.pressure().min(), engineConfig.pressure().max());
         return "OPERATIONAL";
     }
 
@@ -62,18 +37,18 @@ public class AetherEngineService {
      * Attempts to start the engine.
      */
     public String startEngine() {
-        LOG.infof("Initiating startup sequence for %s...", displayName);
+        LOG.infof("Initiating startup sequence for %s...", engineConfig.displayName());
 
-        if (pressureMin >= pressureMax) {
+        if (engineConfig.pressure().min() >= engineConfig.pressure().max()) {
             LOG.error("Cannot start: pressure configuration is invalid.");
             return "START FAILED \u2014 invalid pressure configuration";
         }
 
-        LOG.debugf("Activating fuel system. Fuel type: %s", fuelType);
+        LOG.debugf("Activating fuel system. Fuel type: %s", engineConfig.fuel().type());
         fuelRegulator.regulateFuel();
 
-        LOG.infof("Engine started successfully. Operating at %d\u2013%d bar.", pressureMin, pressureMax);
-        return "ENGINE STARTED \u2014 " + displayName + " is now OPERATIONAL";
+        LOG.infof("Engine started successfully. Operating at %d\u2013%d bar.", engineConfig.pressure().min(), engineConfig.pressure().max());
+        return "ENGINE STARTED \u2014 " + engineConfig.displayName() + " is now OPERATIONAL";
     }
 
     /**
@@ -81,16 +56,12 @@ public class AetherEngineService {
      */
     public String getInfo() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Name    : ").append(name).append("\n");
-        sb.append("Location: ").append(location).append("\n");
-        sb.append("Display : ").append(displayName).append("\n");
+        sb.append("Name    : ").append(engineConfig.name()).append("\n");
+        sb.append("Location: ").append(engineConfig.location()).append("\n");
+        sb.append("Display : ").append(engineConfig.displayName()).append("\n");
         sb.append("Status  : ").append(getStatus()).append("\n");
-        sb.append("Pressure: ").append(pressureMin).append("\u2013").append(pressureMax).append(" bar\n");
-        sb.append("Fuel    : ").append(fuelType).append(" @ ").append(fuelRegulator.getFlowRate()).append(" units/s\n");
-
-        // TODO Task 6: After implementing EngineConfig and injecting it here,
-        //              replace the individual @ConfigProperty fields above with
-        //              calls like engineConfig.pressure().min(), engineConfig.fuel().type(), etc.
+        sb.append("Pressure: ").append(engineConfig.pressure().min()).append("\u2013").append(engineConfig.pressure().max()).append(" bar\n");
+        sb.append("Fuel    : ").append(engineConfig.displayName()).append(" @ ").append(fuelRegulator.getFlowRate()).append(" units/s\n");
 
         return sb.toString();
     }

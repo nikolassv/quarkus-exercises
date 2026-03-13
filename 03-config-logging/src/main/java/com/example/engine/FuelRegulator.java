@@ -1,39 +1,30 @@
 package com.example.engine;
 
+import com.example.config.EngineConfig;
+import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
+import jakarta.inject.Inject;
 
 /**
  * Regulates the flow of aetheric fuel into the engine boiler.
- *
- * <p>TODO Task 4: This class uses {@code System.err.println} for its warning output,
- * which bypasses the application's logging infrastructure entirely. Add proper logging.
  */
 @ApplicationScoped
 public class FuelRegulator {
 
     private static final double MAX_SAFE_FLOW_RATE = 5.0;
 
-    @ConfigProperty(name = "engine.fuel.type")
-    String fuelType;
-
-    @ConfigProperty(name = "engine.fuel.flow-rate")
-    double flowRate;
+    @Inject
+    EngineConfig engineConfig;
 
     public void regulateFuel() {
-        if (flowRate > MAX_SAFE_FLOW_RATE) {
-            System.err.println("WARNING: Flow rate " + flowRate
-                    + " exceeds safe maximum of " + MAX_SAFE_FLOW_RATE + "!");
+        if (engineConfig.fuel().flowRate() > MAX_SAFE_FLOW_RATE) {
+            Log.errorf("WARNING: Flow rate %f exceeds safe maximum of %f!", engineConfig.fuel().flowRate(), MAX_SAFE_FLOW_RATE);
         }
-        // TODO Task 4: Add logging.
-    }
-
-    public void adjustFlow(double newFlowRate) {
-        // TODO Task 4: Add logging.
-        this.flowRate = newFlowRate;
+        Log.infof("INFO: Regulating fuel for %s with rate %f",
+                engineConfig.fuel().type(), engineConfig.fuel().flowRate());
     }
 
     public double getFlowRate() {
-        return flowRate;
+        return engineConfig.fuel().flowRate();
     }
 }
