@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AECS — Aetheric Engine Control System</title>
+    <style>
+        :root {
+            --bg:          #0a0600;
+            --bg-panel:    #110900;
+            --bg-inset:    #080400;
+            --brass:       #c8860a;
+            --brass-dim:   #6b4a08;
+            --brass-hi:    #f0a030;
+            --copper:      #b06020;
+            --sepia:       #5a3a10;
+            --sepia-text:  #8a6030;
+            --red:         #cc2200;
+            --red-bg:      #1a0000;
+            --green:       #5ab820;
+            --green-bg:    #031000;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: monospace;
+            background: var(--bg);
+            color: var(--brass);
+            max-width: 780px;
+            margin: 30px auto;
+            padding: 0 16px 40px;
+        }
+
+        /* ── Outer frame ── */
+        .frame {
+            border: 2px solid var(--brass-dim);
+            position: relative;
+        }
+
+        .frame-corner {
+            position: absolute;
+            color: var(--brass);
+            font-size: 1.1em;
+            line-height: 1;
+        }
+        .frame-corner.tl { top: -1px;  left: -1px; }
+        .frame-corner.tr { top: -1px;  right: -1px; }
+        .frame-corner.bl { bottom: -1px; left: -1px; }
+        .frame-corner.br { bottom: -1px; right: -1px; }
+
+        /* ── Header ── */
+        header {
+            background: var(--bg-panel);
+            border-bottom: 2px solid var(--brass-dim);
+            padding: 18px 24px 14px;
+        }
+
+        .rivet-row {
+            color: var(--sepia);
+            letter-spacing: 6px;
+            font-size: 0.7em;
+            user-select: none;
+        }
+
+        h1 {
+            color: var(--brass-hi);
+            font-size: 1.25em;
+            letter-spacing: 3px;
+            margin: 10px 0 4px;
+        }
+
+        .subtitle {
+            color: var(--sepia-text);
+            font-size: 0.78em;
+            letter-spacing: 1px;
+        }
+
+        /* ── Main content ── */
+        main {
+            padding: 24px;
+        }
+
+        /* ── Panels ── */
+        .panel {
+            border: 1px solid var(--sepia);
+            margin-bottom: 28px;
+            position: relative;
+        }
+
+        .panel-title {
+            position: absolute;
+            top: -9px;
+            left: 12px;
+            background: var(--bg);
+            padding: 0 8px;
+            color: var(--brass-hi);
+            font-size: 0.78em;
+            letter-spacing: 2px;
+        }
+
+        .panel-body {
+            padding: 20px 18px 16px;
+        }
+
+        .hint {
+            color: var(--sepia-text);
+            font-size: 0.8em;
+            line-height: 1.6;
+            margin-bottom: 14px;
+        }
+
+        /* ── Status gauge ── */
+        #gauge-wrap {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 14px;
+        }
+
+        #gauge {
+            font-size: 1.6em;
+            font-weight: bold;
+            letter-spacing: 5px;
+            padding: 12px 24px;
+            border: 2px solid var(--brass-dim);
+            background: var(--bg-inset);
+            color: var(--brass);
+            min-width: 220px;
+            text-align: center;
+            transition: color 0.4s, border-color 0.4s, background 0.4s;
+        }
+
+        #gauge.halted {
+            color: var(--red);
+            border-color: var(--red);
+            background: var(--red-bg);
+        }
+
+        #gauge.operational {
+            color: var(--green);
+            border-color: var(--green);
+            background: var(--green-bg);
+        }
+
+        .gauge-label {
+            color: var(--sepia-text);
+            font-size: 0.75em;
+            letter-spacing: 1px;
+        }
+
+        /* ── Buttons ── */
+        button {
+            font-family: monospace;
+            font-size: 0.92em;
+            padding: 8px 20px;
+            background: #1a0d00;
+            color: var(--brass-hi);
+            border: 1px solid var(--brass);
+            cursor: pointer;
+            letter-spacing: 1px;
+        }
+
+        button:hover  { background: #2a1800; border-color: var(--brass-hi); }
+        button:active { background: #331f00; }
+
+        /* ── Output panes ── */
+        pre {
+            background: var(--bg-inset);
+            color: #d4960c;
+            border: 1px solid var(--sepia);
+            border-top: 1px solid var(--brass-dim);
+            padding: 11px 14px;
+            white-space: pre-wrap;
+            font-size: 0.88em;
+            min-height: 2.8em;
+            margin-top: 14px;
+        }
+
+        pre::before {
+            content: attr(data-label);
+            display: block;
+            color: var(--sepia-text);
+            font-size: 0.78em;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+        }
+
+        /* ── Pipe divider ── */
+        .pipe-divider {
+            color: var(--sepia);
+            font-size: 0.7em;
+            letter-spacing: 2px;
+            text-align: center;
+            margin: 0 0 28px;
+            user-select: none;
+        }
+
+        /* ── Footer ── */
+        footer {
+            border-top: 1px solid var(--sepia);
+            padding-top: 14px;
+            color: var(--sepia);
+            font-size: 0.75em;
+            text-align: center;
+            line-height: 1.8;
+        }
+    </style>
+</head>
+<body>
+
+<div class="frame">
+    <span class="frame-corner tl">╔</span>
+    <span class="frame-corner tr">╗</span>
+    <span class="frame-corner bl">╚</span>
+    <span class="frame-corner br">╝</span>
+
+    <header>
+        <div class="rivet-row">⦿ ⦿ ⦿ ⦿ ⦿ ⦿ ⦿ ⦿ ⦿ ⦿ ⦿ ⦿ ⦿ ⦿ ⦿ ⦿ ⦿ ⦿ ⦿ ⦿ ⦿ ⦿ ⦿ ⦿</div>
+        <h1>⚙  AETHERIC ENGINE CONTROL SYSTEM</h1>
+        <div class="subtitle">City of Cogsworth — Emergency Operations Panel — Est. MDCCCLXXXIX</div>
+        <div class="rivet-row" style="margin-top:10px">⦿ ⦿ ⦿ ⦿ ⦿ ⦿ ⦿ ⦿ ⦿ ⦿ ⦿ ⦿ ⦿ ⦿ ⦿ ⦿ ⦿ ⦿ ⦿ ⦿ ⦿ ⦿ ⦿ ⦿</div>
+    </header>
+
+    <main>
+
+        <!-- STATUS GAUGE -->
+        <div class="panel">
+            <div class="panel-title">⊙  ENGINE STATUS GAUGE</div>
+            <div class="panel-body">
+                <p class="hint">
+                    Reads the current engine state from the control system.<br>
+                    If the pressure configuration is invalid, the engine remains halted.
+                </p>
+                <div id="gauge-wrap">
+                    <div id="gauge">— — —</div>
+                    <div>
+                        <div class="gauge-label">PRESSURE INTERLOCK</div>
+                        <div class="gauge-label" id="pressure-state" style="color:var(--brass);margin-top:4px">reading…</div>
+                    </div>
+                </div>
+                <button id="refreshStatus">↻  Poll Gauge</button>
+                <pre id="statusOutput" data-label="CONTROL SYSTEM RESPONSE">(awaiting signal from control room...)</pre>
+            </div>
+        </div>
+
+        <div class="pipe-divider">
+            ─── ⚙ ──────────────────────────────────────────── ⚙ ───
+        </div>
+
+        <!-- IGNITION -->
+        <div class="panel">
+            <div class="panel-title">▶  ENGINE IGNITION SEQUENCE</div>
+            <div class="panel-body">
+                <p class="hint">
+                    Initiates the full startup sequence: fuel regulation, pressure build-up,
+                    crystal resonance alignment.<br>
+                    The engine will refuse to start if configuration is not in order.
+                </p>
+                <button id="startEngine">⚙  Fire Up the Engine!</button>
+                <pre id="startOutput" data-label="IGNITION LOG">(awaiting ignition command...)</pre>
+            </div>
+        </div>
+
+        <div class="pipe-divider">
+            ─── ⚙ ──────────────────────────────────────────── ⚙ ───
+        </div>
+
+        <!-- CONFIGURATION MANIFEST -->
+        <div class="panel">
+            <div class="panel-title">◈  CONFIGURATION MANIFEST</div>
+            <div class="panel-body">
+                <p class="hint">
+                    Displays the current engine parameters as read from the configuration system.<br>
+                    After completing Task 6 (ConfigMapping), pressure and fuel readings will appear.
+                </p>
+                <button id="loadInfo">⊞  Read Manifest</button>
+                <pre id="infoOutput" data-label="MANIFEST READOUT">(manifest not yet retrieved...)</pre>
+            </div>
+        </div>
+
+    </main>
+
+    <footer>
+        ⚙  AECS v1.0 — Cogsworth Municipal Engineering &amp; Aetheric Works  ⚙<br>
+        <span style="color:var(--sepia)">
+            In case of catastrophic over-pressure: evacuate the boiler room. Do not attempt manual override.
+        </span>
+    </footer>
+</div>
+
+<script>
+    async function pollStatus() {
+        const out    = document.getElementById('statusOutput');
+        const gauge  = document.getElementById('gauge');
+        const pstate = document.getElementById('pressure-state');
+        try {
+            const res  = await fetch('/engine/status');
+            const text = (await res.text()).trim();
+            gauge.textContent  = text;
+            gauge.className    = text === 'OPERATIONAL' ? 'operational' : 'halted';
+            pstate.textContent = text === 'OPERATIONAL' ? 'INTERLOCK CLEAR' : 'INTERLOCK TRIPPED';
+            pstate.style.color = text === 'OPERATIONAL' ? 'var(--green)' : 'var(--red)';
+            out.textContent    = 'HTTP ' + res.status + ' — ' + text;
+        } catch (e) {
+            gauge.textContent  = 'OFFLINE';
+            gauge.className    = 'halted';
+            pstate.textContent = 'NO SIGNAL';
+            out.textContent    = 'Connection error: ' + e.message;
+        }
+    }
+
+    document.getElementById('refreshStatus').addEventListener('click', pollStatus);
+
+    document.getElementById('startEngine').addEventListener('click', async () => {
+        const out = document.getElementById('startOutput');
+        out.textContent = '... engaging ignition sequence ...';
+        try {
+            const res = await fetch('/engine/start', { method: 'POST' });
+            out.textContent = await res.text();
+            await pollStatus();
+        } catch (e) {
+            out.textContent = 'Error: ' + e.message;
+        }
+    });
+
+    document.getElementById('loadInfo').addEventListener('click', async () => {
+        const out = document.getElementById('infoOutput');
+        out.textContent = '... retrieving manifest ...';
+        try {
+            const res = await fetch('/engine/info');
+            out.textContent = await res.text();
+        } catch (e) {
+            out.textContent = 'Error: ' + e.message;
+        }
+    });
+
+    // Initial status poll on page load
+    pollStatus();
+</script>
+</body>
+</html>

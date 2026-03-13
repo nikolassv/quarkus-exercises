@@ -54,6 +54,23 @@ Use a consistent Quarkus version across all projects. Check existing projects be
 - On `main`: provide the structure, dependencies, and tests. Leave the implementation incomplete or broken.
 - On `solution`: provide a clean, idiomatic implementation that passes all tests.
 
+## Writing Task Descriptions in READMEs
+
+**Describe the symptom or desired outcome — not the solution.**
+Say what is wrong and what the correct end state looks like. Let the developer figure out the fix. Do not explain which property to change, which annotation to add, or what value to use.
+
+**Make developers feel the need for a concept before introducing it.**
+Instead of presenting a broken example of a feature and asking them to fix it, design the scenario so that the developer encounters a real pain point first (e.g. duplicated values, inconsistent output). Then suggest the concept as a possible solution without spelling out the implementation.
+
+**Never pre-write the solution inside a TODO comment or commented-out code block.**
+Participants must write the code or configuration themselves. Scaffolded comments that just need to be uncommented are not a learning exercise. Remove them and let developers write it from scratch.
+
+**Test behaviour, not raw config values.**
+Failing tests should assert on meaningful application behaviour (e.g. `getStatus()` returns `"OPERATIONAL"`), not on internal implementation details like "pressureMin < pressureMax". The test failure should read like a business requirement, not a config validator.
+
+**Do not add hints unless the task genuinely cannot be solved without one.**
+The CDI example has no hints at all. Participants have just completed the relevant course chapter and should have the knowledge to figure tasks out. When in doubt, omit the hint.
+
 ## Topics (Draft)
 
 1. Setting up a basic Quarkus project
