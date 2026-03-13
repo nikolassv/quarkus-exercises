@@ -29,7 +29,7 @@ public class AetherEngineService {
                     engineConfig.pressure().min(), engineConfig.pressure().max());
             return "HALTED";
         }
-        LOG.infof("Engine '%s' is operational. Pressure range: %f\u2013%f bar.",
+        LOG.infof("Engine '%s' is operational. Pressure range: %d\u2013%d bar.",
                 engineConfig.displayName(), engineConfig.pressure().min(), engineConfig.pressure().max());
         return "OPERATIONAL";
     }
@@ -48,7 +48,7 @@ public class AetherEngineService {
         LOG.debugf("Activating fuel system. Fuel type: %s", engineConfig.fuel().type());
         fuelRegulator.regulateFuel();
 
-        LOG.infof("Engine started successfully. Operating at %f\u2013%f bar, max temperature %d\u00b0C.",
+        LOG.infof("Engine started successfully. Operating at %d\u2013%d bar, max temperature %d\u00b0C.",
                 engineConfig.pressure().min(), engineConfig.pressure().max(), engineConfig.temperature().max());
         return "ENGINE STARTED \u2014 " + engineConfig.displayName() + " is now OPERATIONAL";
     }
@@ -63,7 +63,7 @@ public class AetherEngineService {
         sb.append("Display : ").append(engineConfig.displayName()).append("\n");
         sb.append("Status  : ").append(getStatus()).append("\n");
         sb.append("Pressure: ").append(engineConfig.pressure().min()).append("\u2013").append(engineConfig.pressure().max()).append(" bar\n");
-        sb.append("Fuel    : ").append(engineConfig.displayName()).append(" @ ").append(fuelRegulator.getFlowRate()).append(" units/s\n");
+        sb.append("Fuel    : ").append(engineConfig.fuel().type()).append(" @ ").append(fuelRegulator.getFlowRate()).append(" units/s\n");
         sb.append("Temp max: ").append(engineConfig.temperature().max()).append("\u00b0C\n");
 
         return sb.toString();

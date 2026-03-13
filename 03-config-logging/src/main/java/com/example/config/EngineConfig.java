@@ -16,8 +16,8 @@ public interface EngineConfig {
     TemperatureLimits temperature();
 
     interface PressureConfiguration {
-        double min();
-        double max();
+        int min();
+        int max();
         double emergencyThreshold();
     }
 

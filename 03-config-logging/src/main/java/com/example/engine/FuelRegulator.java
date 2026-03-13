@@ -18,7 +18,7 @@ public class FuelRegulator {
 
     public void regulateFuel() {
         if (engineConfig.fuel().flowRate() > MAX_SAFE_FLOW_RATE) {
-            Log.errorf("WARNING: Flow rate %f exceeds safe maximum of %f!", engineConfig.fuel().flowRate(), MAX_SAFE_FLOW_RATE);
+            Log.warnf("WARNING: Flow rate %f exceeds safe maximum of %f!", engineConfig.fuel().flowRate(), MAX_SAFE_FLOW_RATE);
         }
         Log.infof("INFO: Regulating fuel for %s with rate %f",
                 engineConfig.fuel().type(), engineConfig.fuel().flowRate());
