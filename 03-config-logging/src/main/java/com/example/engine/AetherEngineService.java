@@ -7,13 +7,6 @@ import org.jboss.logging.Logger;
 
 /**
  * Main control service for the Great Aetheric Engine.
- *
- * <p>Demonstrates {@link ConfigProperty} injection: each field is bound to a single
- * named property from {@code application.properties}.
- *
- * <p>After completing Task 6 you will replace these individual fields with a single
- * {@code @Inject EngineConfig engineConfig} injection point (a ConfigMapping), which
- * groups all {@code engine.*} properties into one strongly-typed object.
  */
 @ApplicationScoped
 public class AetherEngineService {
@@ -40,6 +33,9 @@ public class AetherEngineService {
 
     @ConfigProperty(name = "engine.fuel.type")
     String fuelType;
+
+    @ConfigProperty(name = "engine.temperature.max")
+    int temperatureMax;
 
     @Inject
     FuelRegulator fuelRegulator;
@@ -72,7 +68,8 @@ public class AetherEngineService {
         LOG.debugf("Activating fuel system. Fuel type: %s", fuelType);
         fuelRegulator.regulateFuel();
 
-        LOG.infof("Engine started successfully. Operating at %d\u2013%d bar.", pressureMin, pressureMax);
+        LOG.infof("Engine started successfully. Operating at %d\u2013%d bar, max temperature %d\u00b0C.",
+                pressureMin, pressureMax, temperatureMax);
         return "ENGINE STARTED \u2014 " + displayName + " is now OPERATIONAL";
     }
 
@@ -87,10 +84,10 @@ public class AetherEngineService {
         sb.append("Status  : ").append(getStatus()).append("\n");
         sb.append("Pressure: ").append(pressureMin).append("\u2013").append(pressureMax).append(" bar\n");
         sb.append("Fuel    : ").append(fuelType).append(" @ ").append(fuelRegulator.getFlowRate()).append(" units/s\n");
+        sb.append("Temp max: ").append(temperatureMax).append("\u00b0C\n");
 
         // TODO Task 6: After implementing EngineConfig and injecting it here,
-        //              replace the individual @ConfigProperty fields above with
-        //              calls like engineConfig.pressure().min(), engineConfig.fuel().type(), etc.
+        //              replace the individual @ConfigProperty fields above
 
         return sb.toString();
     }

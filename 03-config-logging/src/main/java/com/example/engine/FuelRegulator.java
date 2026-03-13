@@ -25,12 +25,8 @@ public class FuelRegulator {
             System.err.println("WARNING: Flow rate " + flowRate
                     + " exceeds safe maximum of " + MAX_SAFE_FLOW_RATE + "!");
         }
-        // TODO Task 4: Add logging.
-    }
 
-    public void adjustFlow(double newFlowRate) {
-        // TODO Task 4: Add logging.
-        this.flowRate = newFlowRate;
+        System.out.println("INFO: Regulating fuel for " + fuelType + " with rate " + flowRate);
     }
 
     public double getFlowRate() {

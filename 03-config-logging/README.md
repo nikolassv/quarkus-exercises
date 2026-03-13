@@ -1,5 +1,7 @@
 # 03 — Configuration & Logging: The Great Aetheric Engine
 
+![The Machine is Broken](ironholms-machine.png "The Machine is Broken")
+
 ## The City of Cogsworth Needs You
 
 The city of Cogsworth runs on a single colossal machine buried beneath its streets — the
@@ -87,7 +89,9 @@ it with proper logging.
 ### Task 5 — Persist logs to disk
 
 Engine logs are lost on every restart, making post-incident analysis difficult. Configure
-the logging system to write logs to a file named `engine.log`.
+the logging system to write logs to a file named `engine.log` in the `log` path. Also enable per-boot rotation
+with a date suffix — the Cogsworth Incident Review Board requires each startup to produce its
+own timestamped log file so failures can be traced back to the exact run.
 
 ---
 
