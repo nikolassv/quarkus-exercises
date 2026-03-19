@@ -6,17 +6,16 @@ A collection of small, self-contained Quarkus projects for use in a developer co
 
 The following topics are covered (subject to change):
 
-| Directory | Topic |
-|-----------|-------|
-| `01-setup/` | Setting up a basic Quarkus project |
-| `02-cdi/` | Contexts and Dependency Injection (CDI) |
-| `03-configuration/` | Configuration with MicroProfile Config |
-| `04-logging/` | Logging |
-| `05-rest/` | Building REST APIs |
-| `06-persistence/` | Persistence with Hibernate ORM and Panache |
-| `07-reactive/` | Reactive programming |
-| `08-security/` | Security |
-| `09-ai/` | Using AI with LangChain4j |
+| Directory            | Topic                                              |
+|----------------------|----------------------------------------------------|
+| `01-setup/`          | Setting up a basic Quarkus project                 |
+| `02-cdi/`            | Contexts and Dependency Injection (CDI)            |
+| `03-config-logging/` | Configuration with MicroProfile Config and Logging |
+| `04-rest/`           | Building REST APIs                                 |
+| `05-persistence/`    | Persistence with Hibernate ORM and Panache         |
+| `06-reactive/`       | Reactive programming                               |
+| `07-security/`       | Security                                           |
+| `08-ai/`             | Using AI with LangChain4j                          |
 
 ## How to Use This Repository
 
