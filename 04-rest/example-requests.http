@@ -1,0 +1,23 @@
+### List all Pets
+GET http://localhost:8080/pets
+
+### Create Pet
+POST http://localhost:8080/pets
+Content-Type: application/json
+
+{
+  "name": "Rufus",
+  "ownerHandle": "@tomr",
+  "species": "DOG",
+  "bio": "Bark twice if you love snacks. 🐾 Professional belly-rub consultant."
+}
+
+### Get All Squeaks
+GET http://localhost:8080/squeaks
+
+### Get All Dog Squeaks
+GET http://localhost:8080/squeaks?type=DOG
+
+### Get Biscuits Squeaks
+GET http://localhost:8080/squeaks/my
+Cookie: pet_session=buiscuit
