@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BarkSquare — The Social Network for Pets</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, Helvetica, sans-serif; font-size: 13px; background: #e8dfd0; color: #333; min-height: 100vh; }
+        a { color: #a54200; text-decoration: none; cursor: pointer; }
+        a:hover { text-decoration: underline; }
+
+        /* ===== Top Bar ===== */
+        #topbar {
+            background: linear-gradient(to bottom, #4a1e00, #2c1000);
+            border-bottom: 3px solid #b85010;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            gap: 16px;
+            position: sticky; top: 0; z-index: 100;
+        }
+        #logo { color: #fff; font-size: 22px; font-weight: bold; letter-spacing: -1px; flex-shrink: 0; }
+        #logo sup {
+            background: #b85010; color: #fff; font-size: 9px; padding: 2px 5px;
+            border-radius: 3px; font-weight: normal; letter-spacing: 0; margin-left: 3px;
+            vertical-align: super; text-transform: uppercase;
+        }
+        #topnav { flex: 1; display: flex; gap: 2px; }
+        #topnav a {
+            color: #d4a080; padding: 6px 14px; border-radius: 4px;
+            font-size: 13px; font-weight: bold;
+        }
+        #topnav a:hover, #topnav a.active { background: rgba(255,255,255,0.15); color: #fff; text-decoration: none; }
+        #topbar-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+        #pet-selector {
+            padding: 5px 8px; border-radius: 4px;
+            border: 1px solid #b85010; background: #3a1800; color: #f0c090;
+            font-size: 12px; cursor: pointer;
+        }
+        #pet-selector option { background: #fff; color: #333; }
+
+        /* ===== Tagline ===== */
+        #tagline {
+            background: #b85010; color: rgba(255,255,255,0.88);
+            text-align: center; padding: 5px; font-size: 11px; letter-spacing: 0.2px;
+        }
+
+        /* ===== Layout ===== */
+        #wrapper {
+            max-width: 960px; margin: 14px auto;
+            display: grid; grid-template-columns: 206px 1fr 206px;
+            gap: 12px; align-items: start; padding: 0 8px;
+        }
+
+        /* ===== Box component ===== */
+        .box {
+            background: #fff; border: 1px solid #d0c8bc;
+            border-radius: 5px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow: hidden; margin-bottom: 10px;
+        }
+        .box:last-child { margin-bottom: 0; }
+        .box-header {
+            background: linear-gradient(to bottom, #f5e8dc, #e8d4c0);
+            border-bottom: 1px solid #d0c8bc;
+            padding: 7px 12px; font-weight: bold; font-size: 11px;
+            color: #6b3010; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .box-body { padding: 10px 12px; }
+
+        /* ===== Profile card ===== */
+        #not-logged-in { text-align: center; padding: 12px 0; }
+        #not-logged-in .big-emoji { font-size: 44px; display: block; margin-bottom: 8px; }
+        #not-logged-in p { color: #888; font-size: 11px; line-height: 1.5; }
+        #profile-content { display: none; }
+        #profile-avatar {
+            width: 62px; height: 62px; border-radius: 50%;
+            background: linear-gradient(135deg, #c05820, #8b3a10);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 30px; margin: 2px auto 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+        #profile-name { text-align: center; font-weight: bold; font-size: 14px; color: #2c1000; }
+        #profile-handle { text-align: center; color: #999; font-size: 11px; margin-bottom: 4px; }
+        #profile-bio {
+            text-align: center; color: #666; font-size: 11px;
+            line-height: 1.5; font-style: italic; margin-bottom: 8px;
+        }
+        #profile-stats {
+            display: flex; border-top: 1px solid #f0e8e0;
+            padding-top: 8px; text-align: center;
+        }
+        .stat { flex: 1; }
+        .stat-num { font-weight: bold; font-size: 18px; color: #b85010; }
+        .stat-label { font-size: 10px; color: #999; text-transform: uppercase; }
+
+        /* ===== Left nav ===== */
+        #left-nav .box-body { padding: 0; }
+        #left-nav a {
+            display: block; padding: 9px 14px;
+            border-bottom: 1px solid #f0e8e0; color: #444; font-size: 13px;
+        }
+        #left-nav a:last-child { border-bottom: none; }
+        #left-nav a:hover { background: #fdf5ee; text-decoration: none; }
+        #left-nav a.active {
+            background: #fdf0e4; color: #b85010; font-weight: bold;
+            border-left: 3px solid #b85010;
+        }
+
+        /* ===== Compose box ===== */
+        #login-prompt {
+            background: #fffaf5; border: 1px dashed #d4a080;
+            border-radius: 4px; padding: 12px; text-align: center;
+        }
+        #login-prompt p { color: #999; font-size: 11px; margin-top: 3px; }
+        #compose-form { display: none; }
+        .compose-inner { display: flex; gap: 10px; align-items: flex-start; }
+        #compose-avatar {
+            width: 40px; height: 40px; border-radius: 50%;
+            background: linear-gradient(135deg, #c05820, #8b3a10);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px; flex-shrink: 0;
+        }
+        #squeak-text {
+            width: 100%; border: 2px solid #e0d0c0; border-radius: 4px;
+            padding: 8px; font-size: 13px; resize: none; height: 62px;
+            font-family: Arial, sans-serif; color: #333; outline: none;
+            transition: border-color 0.2s;
+        }
+        #squeak-text:focus { border-color: #b85010; }
+        #squeak-text::placeholder { color: #bbb; }
+        #compose-footer {
+            display: flex; justify-content: space-between;
+            align-items: center; margin-top: 6px;
+        }
+        #char-counter { font-size: 12px; color: #bbb; font-weight: bold; }
+        #char-counter.warn { color: #d08020; }
+        #char-counter.over { color: #cc2200; }
+
+        /* ===== Buttons ===== */
+        .btn {
+            padding: 6px 16px; border: none; border-radius: 4px;
+            cursor: pointer; font-weight: bold; font-size: 13px;
+        }
+        .btn-primary {
+            background: linear-gradient(to bottom, #d86828, #a84810);
+            color: #fff; box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+        .btn-primary:hover { background: linear-gradient(to bottom, #e07830, #b85820); }
+        .btn-primary:disabled { opacity: 0.5; cursor: default; }
+
+        /* ===== Species tabs ===== */
+        #species-tabs { display: flex; gap: 4px; margin-bottom: 10px; flex-wrap: wrap; }
+        .tab {
+            padding: 5px 11px; border-radius: 20px; border: 1px solid #d0c8bc;
+            background: #fff; color: #666; font-size: 12px; cursor: pointer; font-weight: bold;
+            user-select: none;
+        }
+        .tab:hover { background: #fdf0e4; border-color: #b85010; color: #b85010; }
+        .tab.active { background: #b85010; border-color: #b85010; color: #fff; }
+
+        /* ===== Feed ===== */
+        #feed { display: flex; flex-direction: column; gap: 8px; }
+        .squeak-card {
+            background: #fff; border: 1px solid #d0c8bc;
+            border-left-width: 3px;
+            border-radius: 5px; box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+            padding: 11px 12px; display: flex; gap: 10px;
+            transition: box-shadow 0.15s;
+        }
+        .squeak-card:hover { box-shadow: 0 2px 6px rgba(0,0,0,0.12); }
+        .squeak-avatar {
+            width: 42px; height: 42px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 22px; flex-shrink: 0;
+        }
+        .squeak-body { flex: 1; min-width: 0; }
+        .squeak-meta { display: flex; align-items: baseline; gap: 5px; margin-bottom: 3px; flex-wrap: wrap; }
+        .squeak-name { font-weight: bold; font-size: 13px; color: #2c1000; }
+        .squeak-handle { color: #aaa; font-size: 11px; }
+        .squeak-dot { color: #ddd; font-size: 10px; }
+        .squeak-time { color: #bbb; font-size: 11px; margin-left: auto; white-space: nowrap; }
+        .squeak-content { color: #333; font-size: 13px; line-height: 1.5; word-break: break-word; }
+
+        /* ===== Right sidebar ===== */
+        .member-row {
+            display: flex; align-items: center; gap: 8px;
+            padding: 6px 0; border-bottom: 1px solid #f0e8e0; cursor: pointer;
+        }
+        .member-row:last-child { border-bottom: none; }
+        .member-row:hover .member-name { color: #b85010; text-decoration: underline; }
+        .member-avatar {
+            width: 32px; height: 32px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px; flex-shrink: 0;
+        }
+        .member-name { font-weight: bold; font-size: 12px; color: #2c1000; }
+        .member-handle { font-size: 10px; color: #aaa; }
+
+        /* ===== Toast ===== */
+        #toast {
+            position: fixed; top: 58px; left: 50%; transform: translateX(-50%);
+            padding: 9px 20px; border-radius: 5px; font-size: 13px; font-weight: bold;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.25); z-index: 200;
+            opacity: 0; pointer-events: none; transition: opacity 0.25s; white-space: nowrap;
+        }
+        #toast.success { background: #3d7e22; color: #fff; }
+        #toast.error   { background: #b03020; color: #fff; }
+        #toast.info    { background: #4a7fb5; color: #fff; }
+        #toast.show    { opacity: 1; }
+
+        /* ===== States ===== */
+        .loading { text-align: center; padding: 24px; color: #bbb; font-style: italic; }
+        .empty-state { text-align: center; padding: 28px 16px; color: #aaa; }
+        .empty-state .emoji { font-size: 40px; display: block; margin-bottom: 8px; }
+
+        /* ===== Footer ===== */
+        #footer { text-align: center; padding: 18px; font-size: 11px; color: #aaa; }
+        #footer a { color: #a54200; }
+    </style>
+</head>
+<body>
+
+<nav id="topbar">
+    <div id="logo">🐾 BarkSquare<sup>beta</sup></div>
+    <div id="topnav">
+        <a id="nav-home"   class="active" onclick="switchView('all')">Home</a>
+        <a id="nav-myfeed"              onclick="switchView('my')">My Feed</a>
+    </div>
+    <div id="topbar-right">
+        <select id="pet-selector" onchange="onPetSelected(this.value)">
+            <option value="">🔒 Log in as…</option>
+        </select>
+    </div>
+</nav>
+
+<div id="tagline">
+    "LinkedIn, but for your dog" &nbsp;·&nbsp; pitch deck slide 3 of 47 &nbsp;·&nbsp; Built with AJAX technology™ &nbsp;·&nbsp; Series A pending
+</div>
+
+<div id="toast"></div>
+
+<div id="wrapper">
+
+    <!-- ===== Left Sidebar ===== -->
+    <div id="sidebar-left">
+
+        <div class="box" id="profile-card">
+            <div class="box-header">My Profile</div>
+            <div class="box-body">
+                <div id="not-logged-in">
+                    <span class="big-emoji">🐾</span>
+                    <p>Choose a pet from the top-right menu to log in and start squeaking.</p>
+                </div>
+                <div id="profile-content">
+                    <div id="profile-avatar">🐾</div>
+                    <div id="profile-name">—</div>
+                    <div id="profile-handle">—</div>
+                    <div id="profile-bio">—</div>
+                    <div id="profile-stats">
+                        <div class="stat">
+                            <div class="stat-num" id="stat-squeaks">—</div>
+                            <div class="stat-label">Squeaks</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="box" id="left-nav">
+            <div class="box-header">Navigate</div>
+            <div class="box-body">
+                <a id="link-home"   class="active" onclick="switchView('all')">🏠 All Squeaks</a>
+                <a id="link-myfeed"              onclick="switchView('my')">🐾 My Feed</a>
+            </div>
+        </div>
+
+        <div class="box">
+            <div class="box-header">About BarkSquare</div>
+            <div class="box-body" style="font-size:11px;color:#777;line-height:1.6">
+                <p>Where pets come to express themselves. Share what's on your pet's mind in 140 characters or less.</p>
+                <br>
+                <p style="color:#bbb">© 2011 BarkSquare Inc.<br>SoMa, San Francisco CA<br>
+                   <a href="/q/swagger-ui" target="_blank">API Docs</a> ·
+                   <a href="/q/openapi" target="_blank">OpenAPI</a>
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ===== Main Content ===== -->
+    <div id="main">
+
+        <div class="box" style="margin-bottom:10px">
+            <div class="box-header">What's your pet thinking?</div>
+            <div class="box-body">
+                <div id="login-prompt">
+                    <strong style="color:#b85010">🔒 Log in to start squeaking</strong>
+                    <p>Select your pet from the menu in the top-right corner.</p>
+                </div>
+                <div id="compose-form">
+                    <div class="compose-inner">
+                        <div id="compose-avatar">🐾</div>
+                        <div style="flex:1">
+                            <textarea id="squeak-text"
+                                placeholder="What's on your pet's mind? (140 characters)"
+                                oninput="onSqueakInput(this)"></textarea>
+                            <div id="compose-footer">
+                                <span id="char-counter">140</span>
+                                <button class="btn btn-primary" id="squeak-btn" onclick="postSqueak()">Squeak!</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="species-tabs">
+            <span class="tab active" onclick="filterFeed(null, this)">All</span>
+            <span class="tab" onclick="filterFeed('DOG',     this)">🐶 Dogs</span>
+            <span class="tab" onclick="filterFeed('CAT',     this)">🐱 Cats</span>
+            <span class="tab" onclick="filterFeed('RABBIT',  this)">🐰 Rabbits</span>
+            <span class="tab" onclick="filterFeed('HAMSTER', this)">🐹 Hamsters</span>
+            <span class="tab" onclick="filterFeed('BIRD',    this)">🐦 Birds</span>
+        </div>
+
+        <div id="feed"><div class="loading">Fetching squeaks…</div></div>
+
+    </div>
+
+    <!-- ===== Right Sidebar ===== -->
+    <div id="sidebar-right">
+
+        <div class="box">
+            <div class="box-header">Members</div>
+            <div class="box-body" id="members-list">
+                <div class="loading">Loading…</div>
+            </div>
+        </div>
+
+        <div class="box">
+            <div class="box-header">Trending Species</div>
+            <div class="box-body" id="trending" style="font-size:12px;color:#555;line-height:2.2">
+                Loading…
+            </div>
+        </div>
+
+    </div>
+
+</div><!-- #wrapper -->
+
+<div id="footer">
+    BarkSquare Inc. &copy; 2011 &nbsp;·&nbsp; SoMa, San Francisco &nbsp;·&nbsp;
+    "Move fast and fetch sticks"
+</div>
+
+<script>
+// =====================================================================
+//  Constants
+// =====================================================================
+const EMOJI  = { DOG:'🐶', CAT:'🐱', RABBIT:'🐰', HAMSTER:'🐹', BIRD:'🐦', OTHER:'🐾' };
+const COLORS = {
+    DOG:    'linear-gradient(135deg,#d07030,#8b3a00)',
+    CAT:    'linear-gradient(135deg,#7878d0,#404098)',
+    RABBIT: 'linear-gradient(135deg,#d090c0,#905880)',
+    HAMSTER:'linear-gradient(135deg,#d0a040,#8b6010)',
+    BIRD:   'linear-gradient(135deg,#40b0d0,#187090)',
+    OTHER:  'linear-gradient(135deg,#80b060,#3a6020)'
+};
+const ACCENT = {
+    DOG:'#c06020', CAT:'#5858c0', RABBIT:'#b06090',
+    HAMSTER:'#b08020', BIRD:'#1890b0', OTHER:'#508030'
+};
+
+// =====================================================================
+//  State
+// =====================================================================
+let petsById      = {};
+let currentPetId  = getCookie('pet_session') || null;
+let currentView   = 'all';   // 'all' | 'my'
+let currentFilter = null;    // null | species string
+let cachedSqueaks = [];
+
+// =====================================================================
+//  Cookie helpers
+// =====================================================================
+function getCookie(name) {
+    const m = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+    return m ? decodeURIComponent(m[1]) : null;
+}
+function setCookie(name, value) {
+    if (value) {
+        document.cookie = name + '=' + encodeURIComponent(value) + '; path=/';
+    } else {
+        document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/';
+    }
+}
+
+// =====================================================================
+//  Toast
+// =====================================================================
+let toastTimer;
+function toast(msg, type) {
+    const el = document.getElementById('toast');
+    clearTimeout(toastTimer);
+    el.textContent = msg;
+    el.className = type + ' show';
+    toastTimer = setTimeout(() => el.className = type, 2800);
+}
+
+// =====================================================================
+//  Time formatting
+// =====================================================================
+function timeAgo(iso) {
+    if (!iso) return '';
+    const s = (Date.now() - new Date(iso)) / 1000;
+    if (s < 20)    return 'just now';
+    if (s < 60)    return Math.round(s) + 's ago';
+    if (s < 3600)  return Math.round(s / 60) + 'm ago';
+    if (s < 86400) return Math.round(s / 3600) + 'h ago';
+    return Math.round(s / 86400) + 'd ago';
+}
+
+// =====================================================================
+//  XSS protection
+// =====================================================================
+function esc(s) {
+    if (!s) return '';
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// =====================================================================
+//  API calls
+// =====================================================================
+async function loadPets() {
+    const res = await fetch('/pets').catch(() => null);
+    if (!res || !res.ok) return;
+    const pets = await res.json();
+    pets.forEach(p => petsById[p.id] = p);
+    populateSelector(pets);
+    renderMembers(pets);
+    renderTrending(pets);
+}
+
+async function loadFeed() {
+    const feed = document.getElementById('feed');
+    feed.innerHTML = '<div class="loading">Fetching squeaks…</div>';
+
+    let url = currentView === 'my'
+        ? '/squeaks/my'
+        : currentFilter ? `/squeaks?species=${currentFilter}` : '/squeaks';
+
+    const res = await fetch(url).catch(() => null);
+    if (!res) {
+        feed.innerHTML = '<div class="empty-state"><span class="emoji">😿</span>Could not reach the API.</div>';
+        return;
+    }
+    if (!res.ok) {
+        feed.innerHTML = `<div class="empty-state"><span class="emoji">🔧</span>
+            API returned ${res.status}.<br><small style="color:#bbb">Some tasks may not be fixed yet.</small></div>`;
+        return;
+    }
+    cachedSqueaks = await res.json();
+    renderFeed(cachedSqueaks);
+}
+
+async function postSqueak() {
+    if (!currentPetId) return;
+    const content = document.getElementById('squeak-text').value.trim();
+    if (!content) { toast('Write something first! 🐾', 'error'); return; }
+
+    const btn = document.getElementById('squeak-btn');
+    btn.disabled = true; btn.textContent = 'Posting…';
+
+    const res = await fetch('/squeaks', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-Pet-Id': currentPetId },
+        body: JSON.stringify({ content })
+    }).catch(() => null);
+
+    btn.disabled = false; btn.textContent = 'Squeak!';
+
+    if (!res) { toast('Network error. Try again.', 'error'); return; }
+    if (!res.ok) {
+        const txt = await res.text().catch(() => '');
+        toast('Could not post: ' + (txt || res.status), 'error');
+        return;
+    }
+
+    document.getElementById('squeak-text').value = '';
+    document.getElementById('char-counter').textContent = '140';
+    document.getElementById('char-counter').className = '';
+    toast('Squeak posted! 🐾', 'success');
+    await Promise.all([loadFeed(), refreshSqueakCount()]);
+}
+
+async function refreshSqueakCount() {
+    if (!currentPetId) return;
+    const res = await fetch('/squeaks/my').catch(() => null);
+    if (!res || !res.ok) return;
+    const data = await res.json();
+    document.getElementById('stat-squeaks').textContent = data.length;
+}
+
+// =====================================================================
+//  Rendering
+// =====================================================================
+function renderFeed(squeaks) {
+    const feed = document.getElementById('feed');
+    if (!squeaks || squeaks.length === 0) {
+        feed.innerHTML = '<div class="empty-state"><span class="emoji">🦴</span>No squeaks here yet.</div>';
+        return;
+    }
+    feed.innerHTML = [...squeaks].reverse().map(s => {
+        const pet     = petsById[s.petId] || { name: s.petId, ownerHandle: '', species: 'OTHER' };
+        const species = pet.species || 'OTHER';
+        const color   = COLORS[species]  || COLORS.OTHER;
+        const accent  = ACCENT[species]  || ACCENT.OTHER;
+        const emoji   = EMOJI[species]   || '🐾';
+        return `<div class="squeak-card" style="border-left-color:${accent}">
+            <div class="squeak-avatar" style="background:${color}">${emoji}</div>
+            <div class="squeak-body">
+                <div class="squeak-meta">
+                    <span class="squeak-name">${esc(pet.name)}</span>
+                    <span class="squeak-dot">·</span>
+                    <span class="squeak-handle">${esc(pet.ownerHandle)}</span>
+                    <span class="squeak-time">${timeAgo(s.postedAt)}</span>
+                </div>
+                <div class="squeak-content">${esc(s.content)}</div>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+function populateSelector(pets) {
+    const sel = document.getElementById('pet-selector');
+    const prev = sel.value;
+    sel.innerHTML = '<option value="">🔒 Log in as…</option>';
+    pets.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p.id;
+        opt.textContent = (EMOJI[p.species] || '🐾') + ' ' + p.name;
+        if (p.id === currentPetId) opt.selected = true;
+        sel.appendChild(opt);
+    });
+}
+
+function renderMembers(pets) {
+    const el = document.getElementById('members-list');
+    if (!pets.length) { el.innerHTML = '<div style="color:#bbb;font-size:12px">No members yet.</div>'; return; }
+    el.innerHTML = pets.map(p => {
+        const species = p.species || 'OTHER';
+        return `<div class="member-row" onclick="showPetFeed('${esc(p.id)}')">
+            <div class="member-avatar" style="background:${COLORS[species]||COLORS.OTHER}">${EMOJI[species]||'🐾'}</div>
+            <div>
+                <div class="member-name">${esc(p.name)}</div>
+                <div class="member-handle">${esc(p.ownerHandle)}</div>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+function renderTrending(pets) {
+    const counts = {};
+    pets.forEach(p => counts[p.species] = (counts[p.species] || 0) + 1);
+    document.getElementById('trending').innerHTML = Object.entries(counts)
+        .sort((a, b) => b[1] - a[1])
+        .map(([sp, n]) =>
+            `<div onclick="filterFeed('${sp}',null)" style="cursor:pointer;padding:1px 0" title="Filter by ${sp}">
+                ${EMOJI[sp]||'🐾'} ${sp.charAt(0)+sp.slice(1).toLowerCase()}
+                <strong style="color:#b85010">${n}</strong>
+             </div>`)
+        .join('');
+}
+
+function updateProfileCard(pet) {
+    if (!pet) return;
+    const species = pet.species || 'OTHER';
+    const emoji   = EMOJI[species] || '🐾';
+    const color   = COLORS[species] || COLORS.OTHER;
+    document.getElementById('not-logged-in').style.display   = 'none';
+    document.getElementById('profile-content').style.display = '';
+    document.getElementById('profile-avatar').style.background = color;
+    document.getElementById('profile-avatar').textContent = emoji;
+    document.getElementById('profile-name').textContent    = pet.name;
+    document.getElementById('profile-handle').textContent  = pet.ownerHandle;
+    document.getElementById('profile-bio').textContent     = pet.bio;
+    document.getElementById('compose-avatar').style.background = color;
+    document.getElementById('compose-avatar').textContent  = emoji;
+}
+
+// =====================================================================
+//  UI Event Handlers
+// =====================================================================
+function onPetSelected(petId) {
+    currentPetId = petId || null;
+    setCookie('pet_session', currentPetId);
+
+    if (currentPetId && petsById[currentPetId]) {
+        updateProfileCard(petsById[currentPetId]);
+        refreshSqueakCount();
+        document.getElementById('login-prompt').style.display  = 'none';
+        document.getElementById('compose-form').style.display  = '';
+        toast('Logged in as ' + petsById[currentPetId].name + ' 🐾', 'success');
+    } else {
+        document.getElementById('profile-content').style.display = 'none';
+        document.getElementById('not-logged-in').style.display   = '';
+        document.getElementById('login-prompt').style.display    = '';
+        document.getElementById('compose-form').style.display    = 'none';
+    }
+}
+
+function onSqueakInput(el) {
+    const left = 140 - el.value.length;
+    const c = document.getElementById('char-counter');
+    c.textContent = left;
+    c.className = left < 0 ? 'over' : left < 20 ? 'warn' : '';
+}
+
+function switchView(view) {
+    currentView   = view;
+    currentFilter = null;
+    document.getElementById('nav-home').classList.toggle('active',   view === 'all');
+    document.getElementById('nav-myfeed').classList.toggle('active', view === 'my');
+    document.getElementById('link-home').classList.toggle('active',  view === 'all');
+    document.getElementById('link-myfeed').classList.toggle('active',view === 'my');
+    document.getElementById('species-tabs').style.display = view === 'all' ? 'flex' : 'none';
+    document.querySelectorAll('#species-tabs .tab').forEach((t,i) => t.classList.toggle('active', i===0));
+
+    if (view === 'my' && !currentPetId) {
+        document.getElementById('feed').innerHTML =
+            '<div class="empty-state"><span class="emoji">🔒</span>Log in first to see your personal feed.</div>';
+        return;
+    }
+    loadFeed();
+}
+
+function filterFeed(species, tabEl) {
+    if (currentView === 'my') {
+        currentView = 'all';
+        document.getElementById('nav-home').classList.add('active');
+        document.getElementById('nav-myfeed').classList.remove('active');
+        document.getElementById('link-home').classList.add('active');
+        document.getElementById('link-myfeed').classList.remove('active');
+        document.getElementById('species-tabs').style.display = 'flex';
+    }
+    currentFilter = species;
+    document.querySelectorAll('#species-tabs .tab').forEach(t => t.classList.remove('active'));
+    if (tabEl) {
+        tabEl.classList.add('active');
+    } else {
+        document.querySelector('#species-tabs .tab').classList.add('active');
+    }
+    loadFeed();
+}
+
+async function showPetFeed(petId) {
+    const pet = petsById[petId];
+    if (!pet) return;
+
+    // Switch to global view, clear species filter
+    currentView = 'all'; currentFilter = null;
+    document.getElementById('species-tabs').style.display = 'none';
+
+    const feed = document.getElementById('feed');
+    feed.innerHTML = '<div class="loading">Loading…</div>';
+
+    const res = await fetch('/squeaks').catch(() => null);
+    if (!res || !res.ok) {
+        feed.innerHTML = '<div class="empty-state"><span class="emoji">😿</span>Could not load feed.</div>';
+        return;
+    }
+    const all = await res.json();
+    const petSqueaks = all.filter(s => s.petId === petId);
+    renderFeed(petSqueaks);
+    toast('Viewing ' + pet.name + '\'s squeaks', 'info');
+}
+
+// =====================================================================
+//  Init
+// =====================================================================
+async function init() {
+    await loadPets();
+    await loadFeed();
+    // Restore login session from cookie
+    if (currentPetId && petsById[currentPetId]) {
+        updateProfileCard(petsById[currentPetId]);
+        refreshSqueakCount();
+        document.getElementById('login-prompt').style.display = 'none';
+        document.getElementById('compose-form').style.display = '';
+    }
+}
+
+init();
+</script>
+</body>
+</html>
