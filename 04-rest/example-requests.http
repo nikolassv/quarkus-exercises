@@ -1,6 +1,9 @@
 ### List all Pets
 GET http://localhost:8080/pets
 
+### Get Pet
+GET http://localhost:8080/pets/buiscuit
+
 ### Create Pet
 POST http://localhost:8080/pets
 Content-Type: application/json
