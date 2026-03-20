@@ -21,6 +21,15 @@ GET http://localhost:8080/squeaks
 ### Get All Dog Squeaks
 GET http://localhost:8080/squeaks?species=DOG
 
+### Post a Squak
+POST http://localhost:8080/squeaks
+X-Pet-Id: mr-fluffington
+Content-Type: application/json
+
+{
+    "content": "Just chased my tail for 10 minutes. Caught it. Still don’t trust it."
+}
+
 ### Get Biscuits Squeaks
 GET http://localhost:8080/squeaks/my
 Cookie: pet_session=buiscuit

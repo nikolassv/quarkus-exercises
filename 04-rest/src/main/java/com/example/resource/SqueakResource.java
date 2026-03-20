@@ -41,15 +41,16 @@ public class SqueakResource {
                 .toList();
     }
 
-    // BUG Task 4: Every post attempt is rejected, even when the client sends the correct header.
+    // BUG Task 4: This endpoint ignores everything the client sends — it has no parameters.
     @POST
-    public Response post(@HeaderParam("Pet-Id") String petId, Squeak squeak) {
+    public Response post() {
+        String petId = ""; // This should be set by the "X-Pet-Id" header
         if (petId == null || petId.isBlank()) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("Missing required header: X-Pet-Id")
                     .build();
         }
-        Squeak created = board.post(petId, squeak.content);
+        Squeak created = board.post(petId, ""); // The content must be set from the request body
         URI location = URI.create("/squeaks/" + created.id);
         return Response.created(location).entity(created).build();
     }
