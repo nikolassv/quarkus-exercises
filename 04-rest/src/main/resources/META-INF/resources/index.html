@@ -581,7 +581,7 @@ function updateProfileCard(pet) {
     const emoji   = EMOJI[species] || '🐾';
     const color   = COLORS[species] || COLORS.OTHER;
     document.getElementById('not-logged-in').style.display   = 'none';
-    document.getElementById('profile-content').style.display = '';
+    document.getElementById('profile-content').style.display = 'block';
     document.getElementById('profile-avatar').style.background = color;
     document.getElementById('profile-avatar').textContent = emoji;
     document.getElementById('profile-name').textContent    = pet.name;
@@ -602,7 +602,7 @@ function onPetSelected(petId) {
         updateProfileCard(petsById[currentPetId]);
         refreshSqueakCount();
         document.getElementById('login-prompt').style.display  = 'none';
-        document.getElementById('compose-form').style.display  = '';
+        document.getElementById('compose-form').style.display  = 'block';
         toast('Logged in as ' + petsById[currentPetId].name + ' 🐾', 'success');
     } else {
         document.getElementById('profile-content').style.display = 'none';
@@ -689,7 +689,7 @@ async function init() {
         updateProfileCard(petsById[currentPetId]);
         refreshSqueakCount();
         document.getElementById('login-prompt').style.display = 'none';
-        document.getElementById('compose-form').style.display = '';
+        document.getElementById('compose-form').style.display = 'block';
     }
 }
 
