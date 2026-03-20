@@ -5,14 +5,7 @@ import com.example.model.Squeak;
 import com.example.service.PetRegistry;
 import com.example.service.SqueakBoard;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.CookieParam;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.HeaderParam;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
@@ -32,7 +25,7 @@ public class SqueakResource {
 
     // BUG Task 3: The species filter is ignored — fix it.
     @GET
-    public List<Squeak> search(@QueryParam("type") Species species) {
+    public List<Squeak> search(@QueryParam("species") Species species) {
         if (species == null) {
             return board.all();
         }

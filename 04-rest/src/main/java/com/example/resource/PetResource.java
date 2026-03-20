@@ -15,6 +15,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 
+import java.net.URI;
 import java.util.List;
 
 @Path("/pets")
@@ -37,13 +38,13 @@ public class PetResource {
     @POST
     public Response register(Pet pet) {
         Pet created = registry.register(pet);
-        return Response.ok(created).build();
+        return Response.created(URI.create("/pets/" + created.id)).build();
     }
 
     // BUG Task 2: The id parameter never contains the value from the URL.
     @GET
     @Path("/{id}")
-    public Pet getById(@PathParam("petId") String id) {
+    public Pet getById(@PathParam("id") String id) {
         return registry.findById(id)
                 .orElseThrow(() -> new PetNotFoundException(id));
     }
