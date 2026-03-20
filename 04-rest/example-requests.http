@@ -32,4 +32,4 @@ Content-Type: application/json
 
 ### Get Biscuits Squeaks
 GET http://localhost:8080/squeaks/my
-Cookie: pet_session=buiscuit
+Cookie: pet_session=biscuit
