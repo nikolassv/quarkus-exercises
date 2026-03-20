@@ -113,8 +113,17 @@ A text-only client requests a pet profile with `Accept: text/plain`. The API rej
 ### Task 8 — The API has no documentation
 
 The investor's engineering advisor wants to review the API contract before the board meeting.
-The SmallRye OpenAPI extension is already included in the project. Add `@Tag`, `@Operation`,
-and `@APIResponse` annotations to the resource classes and verify the result at `/q/swagger-ui`.
+The SmallRye OpenAPI extension is already included in the project — the generated spec is
+already visible at `/q/openapi` and `/q/swagger-ui`, but it contains almost no useful
+information.
+
+Annotate both resource classes so the spec describes the API properly:
+
+- Use `@Tag` at the class level to group the endpoints by resource.
+- Use `@Operation` on each method to give it a short summary and description.
+- Use `@APIResponse` to document the possible HTTP response codes and what they mean.
+
+Verify the result in the Swagger UI at http://localhost:8080/q/swagger-ui.
 
 ---
 
