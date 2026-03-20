@@ -34,14 +34,12 @@ public class PetResource {
         return registry.all();
     }
 
-    // BUG Task 1: The API is sending the wrong HTTP status code for a successful creation.
     @POST
     public Response register(Pet pet) {
         Pet created = registry.register(pet);
         return Response.created(URI.create("/pets/" + created.id)).build();
     }
 
-    // BUG Task 2: The id parameter never contains the value from the URL.
     @GET
     @Path("/{id}")
     public Pet getById(@PathParam("id") String id) {
@@ -49,6 +47,24 @@ public class PetResource {
                 .orElseThrow(() -> new PetNotFoundException(id));
     }
 
+    @GET
+    @Path("/{id}")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String getByIdAsPlaintext(@PathParam("id") String id) {
+        return registry.findById(id)
+                .map(PetResource::petToDisplayString)
+                .orElseThrow(() -> new PetNotFoundException(id));
+    }
+
     // TODO Task 7: Clients sending Accept: text/plain currently receive 406 Not Acceptable.
     //              Add a plain-text variant of the pet profile endpoint.
+
+    private static String petToDisplayString(Pet pet) {
+        return """
+                Name: %s
+                Owner: %s
+                Species: %s
+                Bio: %s
+                """.formatted(pet.name, pet.ownerHandle, pet.species, pet.bio);
+    }
 }

@@ -23,7 +23,6 @@ public class SqueakResource {
     @Inject
     PetRegistry registry;
 
-    // BUG Task 3: The species filter is ignored — fix it.
     @GET
     public List<Squeak> search(@QueryParam("species") Species species) {
         if (species == null) {
@@ -34,16 +33,14 @@ public class SqueakResource {
                 .toList();
     }
 
-    // BUG Task 4: This endpoint ignores everything the client sends — it has no parameters.
     @POST
-    public Response post() {
-        String petId = ""; // This should be set by the "X-Pet-Id" header
+    public Response post(@HeaderParam("X-Pet-Id") String petId, Squeak squeak) {
         if (petId == null || petId.isBlank()) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("Missing required header: X-Pet-Id")
                     .build();
         }
-        Squeak created = board.post(petId, ""); // The content must be set from the request body
+        Squeak created = board.post(petId, squeak.content);
         URI location = URI.create("/squeaks/" + created.id);
         return Response.created(location).entity(created).build();
     }
@@ -52,7 +49,7 @@ public class SqueakResource {
     //              Currently always returns an empty list.
     @GET
     @Path("/my")
-    public List<Squeak> myFeed() {
-        return List.of();
+    public List<Squeak> myFeed(@CookieParam("pet_session") String petId) {
+        return board.findByPetId(petId);
     }
 }
