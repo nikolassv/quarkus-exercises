@@ -125,8 +125,22 @@ class BarkSquareTest {
     // Task 9 — Write a REST-assured test, then implement the validation
     // -------------------------------------------------------------------------
 
-    // TODO Task 9: BarkSquare has a 140-character limit per squeak (hats off to the bird site).
-    //              A squeak longer than 140 characters should be rejected with 400 Bad Request.
-    //              Write a test here that verifies this behaviour, watch it fail, then add
-    //              the validation to SqueakResource.
+    @Test
+    void squeaksAreRejectedIfTooLong() {
+        given()
+                .contentType(ContentType.JSON)
+                .header("X-Pet-Id", "biscuit")
+                .body(Map.of("content", """
+                        Borkem ipsum dolor sit amet, consectetur wagging elit, sed do eiusmod
+                        tempor incididunt ut treat et slobber magna aliqua. Ut enim ad minim
+                        venibork, quis nostrud exercitation ullamco fetch laboris nisi ut aliquip
+                        ex ea commodo chew. Duis aute irure dolor in reprehenderit in voluptate
+                        velit esse cillum sniffle eu fugiat nulla pawriatur. Excepteur sit
+                        occaecat cupidatat non proident, sunt in culpa qui officia deserunt
+                        mollit anim id est roll-over.
+                        """))
+                .when().post("/squeaks")
+                .then()
+                .statusCode(400);
+    }
 }

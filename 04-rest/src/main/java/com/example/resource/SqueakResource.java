@@ -42,13 +42,16 @@ public class SqueakResource {
                     .entity("Missing required header: X-Pet-Id")
                     .build();
         }
+
+        if (squeak.content.length() > 140) {
+            throw new BadRequestException("Content too long!");
+        }
+
         Squeak created = board.post(petId, squeak.content);
         URI location = URI.create("/squeaks/" + created.id);
         return Response.created(location).entity(created).build();
     }
 
-    // TODO Task 5: This endpoint should return squeaks for the pet identified by the pet_session cookie.
-    //              Currently always returns an empty list.
     @GET
     @Path("/my")
     public List<Squeak> myFeed(@CookieParam("pet_session") String petId) {
