@@ -2,7 +2,11 @@
 GET http://localhost:8080/pets
 
 ### Get Pet
-GET http://localhost:8080/pets/buiscuit
+GET http://localhost:8080/pets/biscuit
+
+### Get Pet as Plaintext
+GET http://localhost:8080/pets/captain-waddles
+Accept: text/plain
 
 ### Create Pet
 POST http://localhost:8080/pets

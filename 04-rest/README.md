@@ -92,6 +92,13 @@ It always returns an empty list, even when the cookie is set.
 Requesting a pet that doesn't exist returns `500 Internal Server Error`. The API should
 instead communicate clearly that the resource was not found.
 
+<details>
+<summary>Hint</summary>
+
+There is no need to modify `PetResource` to complete this task.
+
+</details>
+
 ---
 
 ### Task 7 — Pet profiles only come in one flavour
