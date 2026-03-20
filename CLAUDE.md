@@ -49,6 +49,8 @@ Directory numbering reflects course order. The list of topics is a draft and may
 
 Use a consistent Quarkus version across all projects. Check existing projects before creating a new one and match their version.
 
+You have the Quarkus CLI `quarkus` at your disposal. Use it if necessary.
+
 ## Tasks vs. Implementation
 
 - On `main`: provide the structure, dependencies, and tests. Leave the implementation incomplete or broken.

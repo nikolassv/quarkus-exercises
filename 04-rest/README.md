@@ -71,8 +71,8 @@ feed regardless of what species is requested.
 
 **Failing test:** `postingSqueakWithPetIdHeaderCreates`
 
-To post a squeak, clients identify themselves with a custom request header. Every post attempt
-is currently rejected with `400 Bad Request`, even when the header is present and correct.
+Every attempt to post a squeak is rejected with `400 Bad Request`. No squeak is ever created,
+regardless of what the client sends.
 
 ---
 
