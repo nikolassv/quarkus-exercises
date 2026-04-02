@@ -1,5 +1,6 @@
 package com.example.library.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,7 @@ public class Tome {
     public String author;
     public int magicLevel;
 
+    @JsonIgnore
     @OneToMany
     public List<Chapter> chapters = new ArrayList<>();
 }
