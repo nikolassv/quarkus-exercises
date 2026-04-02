@@ -17,6 +17,6 @@ public class Tome {
     @Column(name = "magic_level")
     public int magicLevel;
 
-    @OneToMany
+    @OneToMany(mappedBy = "tome")
     public List<Chapter> chapters = new ArrayList<>();
 }

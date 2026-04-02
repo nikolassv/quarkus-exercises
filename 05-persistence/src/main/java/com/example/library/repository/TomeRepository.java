@@ -40,7 +40,7 @@ public class TomeRepository {
     // Task 3
     public List<Tome> findByAuthor(String author) {
         return em.createQuery(
-                "SELECT t FROM tome t WHERE t.author = :author", Tome.class)
+                "SELECT t FROM Tome t WHERE t.author = :author", Tome.class)
                 .setParameter("author", author)
                 .getResultList();
     }

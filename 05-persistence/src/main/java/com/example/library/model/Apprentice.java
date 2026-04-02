@@ -14,6 +14,6 @@ public class Apprentice extends PanacheEntity {
 
     // Task 5
     public static List<Apprentice> findByHouse(String house) {
-        return list("houseName", house);
+        return list("house", house);
     }
 }

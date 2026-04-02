@@ -15,6 +15,7 @@ public class ApprenticeResource {
 
     // Task 4
     @POST
+    @Transactional
     public Response enroll(Apprentice apprentice) {
         apprentice.persist();
         return Response.status(201).entity(apprentice).build();
