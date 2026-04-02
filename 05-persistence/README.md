@@ -75,8 +75,7 @@ the author search.
 
 **Failing test:** `enrollingAnApprenticeSucceeds`
 
-Every attempt to enrol a new apprentice fails with an internal server error. The application
-log mentions a missing transactional context. No apprentice is ever saved, regardless of
+Every attempt to enrol a new apprentice fails with an internal server error. No apprentice is ever saved, regardless of
 what is sent in the request.
 
 ---
