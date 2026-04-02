@@ -8,7 +8,8 @@ import java.util.List;
 public class Tome {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tome_seq")
+    @SequenceGenerator(name = "tome_seq", sequenceName = "tome_seq", allocationSize = 1)
     public Long id;
 
     public String title;

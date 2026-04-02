@@ -6,3 +6,7 @@ INSERT INTO tome(id, title, author, magic_level) VALUES (2, 'Ancient Binding Run
 INSERT INTO tome(id, title, author, magic_level) VALUES (3, 'Shadows and Illusions', 'Corvus Nightwhisper', 5);
 INSERT INTO tome(id, title, author, magic_level) VALUES (4, 'Herbalist Magic: A Primer', 'Sylva Greenbriar', 2);
 INSERT INTO tome(id, title, author, magic_level) VALUES (5, 'The Storm Codex', 'Theron Galestrike', 9);
+
+-- Advance the sequence past the manually assigned IDs above so that
+-- newly registered tomes do not collide with the pre-loaded ones.
+ALTER SEQUENCE tome_seq RESTART WITH 6;

@@ -47,7 +47,8 @@ shelves — the cornerstones of any magical education. Instead, the catalogue is
 empty on every startup.
 
 The recovered library catalogue has been found in `catalogue.sql` at the root of the project.
-Find a way to make Quarkus load it automatically on startup.
+Find a way to make Quarkus load it automatically on startup. Make sure that registering new
+tomes after startup works without errors.
 
 ---
 
