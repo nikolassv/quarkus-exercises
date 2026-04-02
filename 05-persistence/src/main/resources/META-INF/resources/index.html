@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grimoire Academy Library</title>
+    <style>
+        :root {
+            --bg:        #0f0e17;
+            --surface:   #1a1830;
+            --border:    #2e2b50;
+            --gold:      #c9a84c;
+            --gold-dim:  #7a6530;
+            --text:      #d4cfe8;
+            --text-dim:  #7e7a99;
+            --danger:    #8b3a3a;
+            --danger-bg: #2a1010;
+            --success:   #3a6b4a;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Georgia', serif;
+            min-height: 100vh;
+        }
+
+        header {
+            background: var(--surface);
+            border-bottom: 1px solid var(--gold-dim);
+            padding: 1.2rem 2rem;
+            display: flex;
+            align-items: baseline;
+            gap: 1rem;
+        }
+
+        header h1 {
+            color: var(--gold);
+            font-size: 1.5rem;
+            letter-spacing: 0.05em;
+        }
+
+        header span {
+            color: var(--text-dim);
+            font-size: 0.85rem;
+        }
+
+        nav {
+            display: flex;
+            gap: 0;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 0 2rem;
+        }
+
+        nav button {
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            color: var(--text-dim);
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.9rem;
+            padding: 0.75rem 1.25rem;
+            letter-spacing: 0.04em;
+            transition: color 0.15s, border-color 0.15s;
+        }
+
+        nav button:hover { color: var(--text); }
+        nav button.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+        main {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        section {
+            display: none;
+            grid-column: 1 / -1;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        section.active { display: grid; }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 1.25rem;
+        }
+
+        .card h2 {
+            color: var(--gold);
+            font-size: 0.95rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        label {
+            display: block;
+            color: var(--text-dim);
+            font-size: 0.8rem;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.25rem;
+            margin-top: 0.75rem;
+        }
+
+        label:first-of-type { margin-top: 0; }
+
+        input, select {
+            width: 100%;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 0.9rem;
+            padding: 0.45rem 0.6rem;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--gold-dim);
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        button.primary, button.secondary, button.danger {
+            border: 1px solid;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.85rem;
+            letter-spacing: 0.04em;
+            padding: 0.4rem 0.9rem;
+            transition: opacity 0.15s;
+        }
+
+        button.primary {
+            background: var(--gold-dim);
+            border-color: var(--gold);
+            color: #f0e8cc;
+        }
+
+        button.secondary {
+            background: transparent;
+            border-color: var(--border);
+            color: var(--text-dim);
+        }
+
+        button.danger {
+            background: var(--danger-bg);
+            border-color: var(--danger);
+            color: #d08080;
+        }
+
+        button:hover { opacity: 0.8; }
+
+        .list-area {
+            margin-top: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            max-height: 360px;
+            overflow-y: auto;
+        }
+
+        .item {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 0.6rem 0.8rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        .item-body { flex: 1; min-width: 0; }
+        .item-title { color: var(--text); font-weight: bold; }
+        .item-sub { color: var(--text-dim); font-size: 0.8rem; margin-top: 0.15rem; }
+
+        .item-actions { display: flex; gap: 0.35rem; flex-shrink: 0; }
+
+        .item-actions button {
+            background: none;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            color: var(--text-dim);
+            cursor: pointer;
+            font-size: 0.75rem;
+            padding: 0.2rem 0.5rem;
+        }
+
+        .item-actions button:hover { border-color: var(--danger); color: #d08080; }
+        .item-actions button.lend-btn:hover { border-color: var(--gold-dim); color: var(--gold); }
+        .item-actions button.return-btn:hover { border-color: var(--success); color: #80c090; }
+
+        .badge {
+            display: inline-block;
+            border-radius: 3px;
+            font-size: 0.7rem;
+            padding: 0.1rem 0.4rem;
+            letter-spacing: 0.04em;
+        }
+
+        .badge-level { background: #1e1a3a; color: #a090d0; border: 1px solid #3a3060; }
+        .badge-house { background: #1a2a1a; color: #80a080; border: 1px solid #304030; }
+
+        .pagination {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+            font-size: 0.8rem;
+            color: var(--text-dim);
+        }
+
+        .pagination button {
+            background: none;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            color: var(--text-dim);
+            cursor: pointer;
+            font-size: 0.75rem;
+            padding: 0.2rem 0.6rem;
+        }
+
+        .pagination button:disabled { opacity: 0.3; cursor: default; }
+
+        .flash {
+            font-size: 0.8rem;
+            margin-top: 0.6rem;
+            padding: 0.4rem 0.6rem;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .flash.ok  { background: #0a200f; color: #70c080; border: 1px solid #204030; display: block; }
+        .flash.err { background: var(--danger-bg); color: #d08080; border: 1px solid var(--danger); display: block; }
+
+        .empty { color: var(--text-dim); font-size: 0.85rem; font-style: italic; padding: 0.5rem 0; }
+
+        select option { background: var(--surface); }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>✦ Grimoire Academy Library</h1>
+    <span>Management System — Year 1421</span>
+</header>
+
+<nav>
+    <button class="active" onclick="showTab('tomes')">The Stacks</button>
+    <button onclick="showTab('apprentices')">The Roster</button>
+    <button onclick="showTab('borrowings')">The Lending Desk</button>
+</nav>
+
+<main>
+
+    <!-- ═══════════════════════════════ TOMES ═══════════════════════════════ -->
+    <section id="tomes" class="active">
+
+        <div class="card">
+            <h2>Register a Tome</h2>
+            <label>Title</label>
+            <input id="tome-title" type="text" placeholder="e.g. Ember Scrolls">
+            <label>Author</label>
+            <input id="tome-author" type="text" placeholder="e.g. Aldric Voss">
+            <label>Magic Level (1–10)</label>
+            <input id="tome-level" type="number" min="1" max="10" value="3">
+            <div class="btn-row">
+                <button class="primary" onclick="addTome()">Register</button>
+            </div>
+            <div id="tome-flash" class="flash"></div>
+        </div>
+
+        <div class="card">
+            <h2>Search by Author</h2>
+            <label>Author name</label>
+            <input id="search-author" type="text" placeholder="e.g. Mira Stoneheart">
+            <div class="btn-row">
+                <button class="primary" onclick="searchByAuthor()">Search</button>
+                <button class="secondary" onclick="loadTomes()">Show all</button>
+            </div>
+            <div id="search-flash" class="flash"></div>
+        </div>
+
+        <div class="card" style="grid-column: 1 / -1">
+            <h2>Catalogue</h2>
+            <div id="tome-list" class="list-area"><p class="empty">Loading…</p></div>
+        </div>
+
+    </section>
+
+    <!-- ═══════════════════════════════ APPRENTICES ═══════════════════════════════ -->
+    <section id="apprentices">
+
+        <div class="card">
+            <h2>Enrol an Apprentice</h2>
+            <label>Name</label>
+            <input id="app-name" type="text" placeholder="e.g. Lyra Moonfall">
+            <label>House</label>
+            <select id="app-house">
+                <option>Emberhold</option>
+                <option>Tidesong</option>
+                <option>Ironroot</option>
+                <option>Stormveil</option>
+            </select>
+            <label>Enrolment Year</label>
+            <input id="app-year" type="number" value="1421">
+            <div class="btn-row">
+                <button class="primary" onclick="enrollApprentice()">Enrol</button>
+            </div>
+            <div id="app-flash" class="flash"></div>
+        </div>
+
+        <div class="card">
+            <h2>Search by House</h2>
+            <label>House</label>
+            <select id="filter-house">
+                <option value="">— all houses —</option>
+                <option>Emberhold</option>
+                <option>Tidesong</option>
+                <option>Ironroot</option>
+                <option>Stormveil</option>
+            </select>
+            <div class="btn-row">
+                <button class="primary" onclick="filterByHouse()">Filter</button>
+                <button class="secondary" onclick="loadApprentices()">Show all</button>
+            </div>
+            <div id="filter-flash" class="flash"></div>
+        </div>
+
+        <div class="card" style="grid-column: 1 / -1">
+            <h2>Enrolled Apprentices</h2>
+            <div id="app-list" class="list-area"><p class="empty">Loading…</p></div>
+            <div class="pagination">
+                <button id="prev-page" onclick="changePage(-1)" disabled>‹ Prev</button>
+                <span id="page-info">Page 1</span>
+                <button id="next-page" onclick="changePage(1)">Next ›</button>
+                <span style="margin-left:auto">Page size:
+                    <select style="width:auto;display:inline-block;padding:0.2rem 0.4rem"
+                            onchange="pageSize=+this.value;currentPage=0;loadApprentices()">
+                        <option value="5">5</option>
+                        <option value="10" selected>10</option>
+                        <option value="25">25</option>
+                    </select>
+                </span>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- ═══════════════════════════════ BORROWINGS ═══════════════════════════════ -->
+    <section id="borrowings">
+
+        <div class="card">
+            <h2>Lend a Tome</h2>
+            <label>Tome</label>
+            <select id="lend-tome"></select>
+            <label>Apprentice</label>
+            <select id="lend-apprentice"></select>
+            <div class="btn-row">
+                <button class="primary" onclick="lendTome()">Lend</button>
+            </div>
+            <div id="lend-flash" class="flash"></div>
+        </div>
+
+        <div class="card" style="grid-column: 1 / -1">
+            <h2>Active Loans</h2>
+            <div id="loan-list" class="list-area"><p class="empty">Loading…</p></div>
+        </div>
+
+    </section>
+
+</main>
+
+<script>
+    // ─── State ────────────────────────────────────────────────────────────────
+    let currentPage = 0;
+    let pageSize    = 10;
+
+    // ─── Tab navigation ───────────────────────────────────────────────────────
+    function showTab(name) {
+        document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+        document.getElementById(name).classList.add('active');
+        document.querySelector(`nav button[onclick="showTab('${name}')"]`).classList.add('active');
+
+        if (name === 'tomes')       loadTomes();
+        if (name === 'apprentices') { currentPage = 0; loadApprentices(); }
+        if (name === 'borrowings')  { loadActiveLoans(); populateLendSelects(); }
+    }
+
+    // ─── Flash messages ───────────────────────────────────────────────────────
+    function flash(id, msg, ok) {
+        const el = document.getElementById(id);
+        el.textContent = msg;
+        el.className = 'flash ' + (ok ? 'ok' : 'err');
+        setTimeout(() => el.className = 'flash', 3000);
+    }
+
+    // ─── Shared fetch helper ──────────────────────────────────────────────────
+    async function api(method, path, body) {
+        const opts = { method, headers: { 'Content-Type': 'application/json' } };
+        if (body !== undefined) opts.body = JSON.stringify(body);
+        const res = await fetch(path, opts);
+        if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+        if (res.status === 204) return null;
+        return res.json();
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    //  TOMES
+    // ─────────────────────────────────────────────────────────────────────────
+    async function loadTomes() {
+        try {
+            const tomes = await api('GET', '/tomes');
+            renderTomes(tomes);
+        } catch (e) { renderTomes([], e.message); }
+    }
+
+    function renderTomes(tomes, err) {
+        const el = document.getElementById('tome-list');
+        if (err) { el.innerHTML = `<p class="empty">⚠ ${err}</p>`; return; }
+        if (!tomes.length) { el.innerHTML = '<p class="empty">No tomes in the catalogue.</p>'; return; }
+        el.innerHTML = tomes.map(t => `
+            <div class="item">
+                <div class="item-body">
+                    <div class="item-title">${esc(t.title)}</div>
+                    <div class="item-sub">
+                        ${esc(t.author)}
+                        &nbsp;<span class="badge badge-level">Level ${t.magicLevel}</span>
+                    </div>
+                </div>
+                <div class="item-actions">
+                    <button onclick="deleteTome(${t.id})">Remove</button>
+                </div>
+            </div>`).join('');
+    }
+
+    async function addTome() {
+        const title     = document.getElementById('tome-title').value.trim();
+        const author    = document.getElementById('tome-author').value.trim();
+        const magicLevel = +document.getElementById('tome-level').value;
+        if (!title || !author) { flash('tome-flash', 'Title and author are required.', false); return; }
+        try {
+            await api('POST', '/tomes', { title, author, magicLevel });
+            flash('tome-flash', `"${title}" added to the catalogue.`, true);
+            document.getElementById('tome-title').value = '';
+            document.getElementById('tome-author').value = '';
+            loadTomes();
+        } catch (e) { flash('tome-flash', e.message, false); }
+    }
+
+    async function deleteTome(id) {
+        try {
+            await api('DELETE', `/tomes/${id}`);
+            loadTomes();
+        } catch (e) { alert(e.message); }
+    }
+
+    async function searchByAuthor() {
+        const author = document.getElementById('search-author').value.trim();
+        if (!author) { flash('search-flash', 'Enter an author name.', false); return; }
+        try {
+            const tomes = await api('GET', `/tomes/author/${encodeURIComponent(author)}`);
+            renderTomes(tomes);
+            if (!tomes.length) flash('search-flash', 'No tomes found for that author.', false);
+        } catch (e) { flash('search-flash', e.message, false); }
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    //  APPRENTICES
+    // ─────────────────────────────────────────────────────────────────────────
+    async function loadApprentices() {
+        try {
+            const list = await api('GET', `/apprentices?page=${currentPage}&size=${pageSize}`);
+            renderApprentices(list);
+        } catch (e) { renderApprentices([], e.message); }
+    }
+
+    function renderApprentices(list, err) {
+        const el = document.getElementById('app-list');
+        if (err) { el.innerHTML = `<p class="empty">⚠ ${err}</p>`; return; }
+        if (!list.length) { el.innerHTML = '<p class="empty">No apprentices found.</p>'; return; }
+        el.innerHTML = list.map(a => `
+            <div class="item">
+                <div class="item-body">
+                    <div class="item-title">${esc(a.name)}</div>
+                    <div class="item-sub">
+                        <span class="badge badge-house">${esc(a.house)}</span>
+                        &nbsp;enrolled ${a.enrollmentYear}
+                    </div>
+                </div>
+                <div class="item-actions">
+                    <button onclick="dismissApprentice(${a.id})">Dismiss</button>
+                </div>
+            </div>`).join('');
+
+        document.getElementById('prev-page').disabled = currentPage === 0;
+        document.getElementById('next-page').disabled = list.length < pageSize;
+        document.getElementById('page-info').textContent = `Page ${currentPage + 1}`;
+    }
+
+    function changePage(delta) {
+        currentPage = Math.max(0, currentPage + delta);
+        loadApprentices();
+    }
+
+    async function enrollApprentice() {
+        const name          = document.getElementById('app-name').value.trim();
+        const house         = document.getElementById('app-house').value;
+        const enrollmentYear = +document.getElementById('app-year').value;
+        if (!name) { flash('app-flash', 'Name is required.', false); return; }
+        try {
+            await api('POST', '/apprentices', { name, house, enrollmentYear });
+            flash('app-flash', `${name} has been enrolled.`, true);
+            document.getElementById('app-name').value = '';
+            currentPage = 0;
+            loadApprentices();
+        } catch (e) { flash('app-flash', e.message, false); }
+    }
+
+    async function dismissApprentice(id) {
+        try {
+            await api('DELETE', `/apprentices/${id}`);
+            loadApprentices();
+        } catch (e) { alert(e.message); }
+    }
+
+    async function filterByHouse() {
+        const house = document.getElementById('filter-house').value;
+        if (!house) { loadApprentices(); return; }
+        try {
+            const list = await api('GET', `/apprentices/house/${encodeURIComponent(house)}`);
+            renderApprentices(list);
+            // hide pagination controls when filtering
+            document.getElementById('prev-page').disabled = true;
+            document.getElementById('next-page').disabled = true;
+            if (!list.length) flash('filter-flash', `No apprentices in ${house}.`, false);
+        } catch (e) { flash('filter-flash', e.message, false); }
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    //  BORROWINGS
+    // ─────────────────────────────────────────────────────────────────────────
+    async function populateLendSelects() {
+        try {
+            const [tomes, apprentices] = await Promise.all([
+                api('GET', '/tomes'),
+                api('GET', '/apprentices?page=0&size=100'),
+            ]);
+            const ts = document.getElementById('lend-tome');
+            const as = document.getElementById('lend-apprentice');
+            ts.innerHTML = tomes.map(t => `<option value="${t.id}">${esc(t.title)}</option>`).join('');
+            as.innerHTML = apprentices.map(a => `<option value="${a.id}">${esc(a.name)}</option>`).join('');
+        } catch (e) { /* selects stay empty */ }
+    }
+
+    async function loadActiveLoans() {
+        try {
+            const loans = await api('GET', '/borrowings/active');
+            renderLoans(loans);
+        } catch (e) { renderLoans([], e.message); }
+    }
+
+    function renderLoans(loans, err) {
+        const el = document.getElementById('loan-list');
+        if (err) { el.innerHTML = `<p class="empty">⚠ ${err}</p>`; return; }
+        if (!loans.length) { el.innerHTML = '<p class="empty">No active loans.</p>'; return; }
+        el.innerHTML = loans.map(l => `
+            <div class="item">
+                <div class="item-body">
+                    <div class="item-title">${esc(l.tome?.title ?? '(unknown tome)')}</div>
+                    <div class="item-sub">
+                        Borrowed by ${esc(l.apprentice?.name ?? '(unknown)')}
+                        &nbsp;· since ${l.borrowedOn}
+                    </div>
+                </div>
+                <div class="item-actions">
+                    <button class="return-btn" onclick="returnTome(${l.id})">Return</button>
+                </div>
+            </div>`).join('');
+    }
+
+    async function lendTome() {
+        const tomeId       = +document.getElementById('lend-tome').value;
+        const apprenticeId = +document.getElementById('lend-apprentice').value;
+        if (!tomeId || !apprenticeId) { flash('lend-flash', 'Select a tome and an apprentice.', false); return; }
+        try {
+            await api('POST', '/borrowings', { tomeId, apprenticeId });
+            flash('lend-flash', 'Tome lent successfully.', true);
+            loadActiveLoans();
+        } catch (e) { flash('lend-flash', e.message, false); }
+    }
+
+    async function returnTome(id) {
+        try {
+            await api('PUT', `/borrowings/${id}/return`);
+            loadActiveLoans();
+        } catch (e) { alert(e.message); }
+    }
+
+    // ─── Helpers ──────────────────────────────────────────────────────────────
+    function esc(s) {
+        return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    // ─── Boot ─────────────────────────────────────────────────────────────────
+    loadTomes();
+</script>
+</body>
+</html>
