@@ -15,6 +15,7 @@ public class Tome {
 
     public String title;
     public String author;
+    @Column(name = "magic_level")
     public int magicLevel;
 
     @JsonIgnore
