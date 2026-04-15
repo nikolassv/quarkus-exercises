@@ -1,5 +1,6 @@
 package com.example.library.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +18,7 @@ public class Tome {
     @Column(name = "magic_level")
     public int magicLevel;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "tome")
     public List<Chapter> chapters = new ArrayList<>();
 }
