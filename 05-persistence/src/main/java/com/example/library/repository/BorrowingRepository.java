@@ -15,7 +15,7 @@ public class BorrowingRepository implements PanacheRepository<Borrowing> {
 
     // Task 6
     public List<Borrowing> findActiveLoans() {
-        return list("returnedOn IS NOT NULL");
+        return list("returnedOn IS NULL");
     }
 
     @Transactional

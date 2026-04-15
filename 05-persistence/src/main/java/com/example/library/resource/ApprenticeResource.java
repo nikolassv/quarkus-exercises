@@ -26,7 +26,7 @@ public class ApprenticeResource {
             @QueryParam("page") @DefaultValue("0") int page,
             @QueryParam("size") @DefaultValue("10") int size) {
         // TODO Task 7
-        return Apprentice.listAll();
+        return Apprentice.findAll().page(page, size).list();
     }
 
     @GET
