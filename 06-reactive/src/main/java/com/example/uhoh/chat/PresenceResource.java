@@ -1,6 +1,7 @@
 package com.example.uhoh.chat;
 
 import com.example.uhoh.model.Presence;
+import com.example.uhoh.model.PresenceKind;
 import com.example.uhoh.model.RawPresence;
 import io.smallrye.mutiny.Multi;
 import jakarta.inject.Inject;
@@ -12,6 +13,8 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.jboss.resteasy.reactive.RestStreamElementType;
+
+import java.time.Instant;
 
 @Path("/presence")
 public class PresenceResource {
@@ -31,8 +34,22 @@ public class PresenceResource {
     @Produces(MediaType.SERVER_SENT_EVENTS)
     @RestStreamElementType(MediaType.APPLICATION_JSON)
     public Multi<Presence> stream() {
-        // TODO (Task 2): Compose a Mutiny pipeline that consumes broadcaster.rawPresence()
-        // and emits the enriched Presence values described in the README.
-        return Multi.createFrom().nothing();
+        return broadcaster.rawPresence()
+                .skip().where(rp -> rp == null
+                        || rp.sender() == null
+                        || rp.sender().isBlank()
+                        || rp.kind() == null
+                )
+                .onItem().transform(rp -> new Presence(rp.sender(), getPresenceKindFromString(rp.kind()), Instant.now()))
+                .skip().where(p -> p.kind() == null)
+                .log();
+    }
+
+    private PresenceKind getPresenceKindFromString(String presenceKind) {
+        try {
+            return PresenceKind.valueOf(presenceKind);
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
     }
 }
