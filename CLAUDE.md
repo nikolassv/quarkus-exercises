@@ -13,9 +13,11 @@ This repository is course material for a Quarkus developer course. It contains s
 ## Branch Strategy
 
 - **`main`** — skeleton/buggy code for participants. Always create new work here first.
-- **`solution`** — complete solutions. After finishing work on `main`, merge `main` into `solution`, then add a solution commit on top.
+- **`solution`** — complete solutions. After finishing work on `main`, the **user** merges `main` into `solution` and writes the solution commit manually.
 
 Never commit solution code to `main`. Never commit skeleton/buggy code to `solution` without following it with a solution commit.
+
+**Never write the solution yourself.** Claude's scope ends at the `main` branch (skeleton + failing tests + README). The user writes the solution commit by hand — working through the tasks themselves is how they validate that tasks are doable, well-scoped, and consistent with the course material. If Claude implements the solution, that validation step is lost. Do not produce a passing implementation and do not "make the tests green" as a verification step. Mechanical git operations (committing the skeleton, merging `main` into `solution` so the user can land their solution commit on top) are fine when the user explicitly asks.
 
 ## Project Structure
 
@@ -25,13 +27,12 @@ quarkus-academy-examples/
 ├── CLAUDE.md
 ├── 01-setup/
 ├── 02-cdi/
-├── 03-configuration/
-├── 04-logging/
-├── 05-rest/
-├── 06-persistence/
-├── 07-reactive/
-├── 08-security/
-└── 09-ai/
+├── 03-configuration and logging/
+├── 04-rest/
+├── 05-persistence/
+├── 06-reactive/
+├── 09-security/
+└── 10-ai/
 ```
 
 Directory numbering reflects course order. The list of topics is a draft and may change.

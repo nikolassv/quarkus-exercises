@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>UhOh Messenger 99</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="desktop-tip">Tip: open this page in two browser windows to chat with yourself.</div>
+    <div class="window">
+        <div class="title-bar">
+            <span class="title">
+                <span class="flower">&#10047;</span> UhOh Messenger 99 &mdash;
+                <span id="uin">UIN: ----------</span>
+            </span>
+            <div class="title-buttons">
+                <button type="button" disabled>_</button>
+                <button type="button" disabled>&#9633;</button>
+                <button type="button" disabled>&times;</button>
+            </div>
+        </div>
+        <div class="menu-bar">
+            <span><u>F</u>ile</span>
+            <span><u>E</u>dit</span>
+            <span><u>C</u>ontacts</span>
+            <span><u>H</u>elp</span>
+        </div>
+        <div class="layout">
+            <aside class="contacts">
+                <div class="panel-title">Contact List</div>
+                <ul id="contact-list">
+                    <li class="empty">(no buddies online)</li>
+                </ul>
+                <div class="status">
+                    <span class="dot online"></span> Online
+                </div>
+            </aside>
+            <main class="chat">
+                <div class="panel-title">Message Window</div>
+                <div class="messages" id="messages"></div>
+                <div class="typing" id="typing">&nbsp;</div>
+                <form id="composer" autocomplete="off">
+                    <input type="text" id="sender" placeholder="Your handle" required maxlength="20">
+                    <input type="text" id="text" placeholder="Type a message... press Enter to send." required maxlength="200">
+                    <button type="submit">Send</button>
+                </form>
+            </main>
+        </div>
+    </div>
+    <script src="chat.js"></script>
+</body>
+</html>

@@ -1,0 +1,220 @@
+* { box-sizing: border-box; }
+
+body {
+    background: #008080;
+    font-family: "Tahoma", "MS Sans Serif", "Geneva", sans-serif;
+    font-size: 12px;
+    color: #000;
+    margin: 0;
+    padding: 32px 16px;
+    min-height: 100vh;
+}
+
+.desktop-tip {
+    color: #c0c0c0;
+    text-align: center;
+    margin-bottom: 16px;
+    font-size: 11px;
+    text-shadow: 1px 1px 0 #000;
+}
+
+.window {
+    background: #c0c0c0;
+    border-top: 2px solid #ffffff;
+    border-left: 2px solid #ffffff;
+    border-right: 2px solid #000000;
+    border-bottom: 2px solid #000000;
+    box-shadow: inset -1px -1px 0 #808080, inset 1px 1px 0 #dfdfdf;
+    max-width: 720px;
+    margin: 0 auto;
+}
+
+.title-bar {
+    background: linear-gradient(90deg, #000080, #1084d0);
+    color: white;
+    padding: 4px 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+}
+
+.title .flower {
+    color: #ffd700;
+    margin-right: 4px;
+    font-size: 14px;
+}
+
+.title-buttons button {
+    width: 20px;
+    height: 18px;
+    margin-left: 2px;
+    font-family: inherit;
+    font-size: 11px;
+    line-height: 1;
+    background: #c0c0c0;
+    color: #000;
+    border-top: 1px solid #ffffff;
+    border-left: 1px solid #ffffff;
+    border-right: 1px solid #000000;
+    border-bottom: 1px solid #000000;
+}
+
+.menu-bar {
+    background: #c0c0c0;
+    border-bottom: 1px solid #808080;
+    padding: 3px 6px;
+}
+.menu-bar span {
+    margin-right: 14px;
+}
+
+.layout {
+    display: flex;
+    height: 480px;
+}
+
+.contacts {
+    width: 200px;
+    background: #c0c0c0;
+    border-right: 1px solid #808080;
+    display: flex;
+    flex-direction: column;
+}
+
+.panel-title {
+    background: #c0c0c0;
+    padding: 4px 8px;
+    font-weight: bold;
+    border-bottom: 1px solid #808080;
+}
+
+#contact-list {
+    list-style: none;
+    margin: 4px;
+    padding: 4px;
+    flex: 1;
+    overflow-y: auto;
+    background: white;
+    border-top: 1px solid #808080;
+    border-left: 1px solid #808080;
+    border-right: 1px solid #ffffff;
+    border-bottom: 1px solid #ffffff;
+}
+#contact-list li {
+    padding: 2px 6px;
+}
+#contact-list li::before {
+    content: "\10047  ";
+    color: #ffaa00;
+}
+#contact-list li.empty {
+    color: #808080;
+    font-style: italic;
+}
+#contact-list li.empty::before {
+    content: "";
+}
+
+.status {
+    padding: 6px 8px;
+    background: #c0c0c0;
+    border-top: 1px solid #808080;
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+}
+.status .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 6px;
+    background: #00ff00;
+    box-shadow: 0 0 4px #00ff00;
+}
+
+.chat {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: #c0c0c0;
+}
+
+.messages {
+    flex: 1;
+    background: white;
+    margin: 4px;
+    padding: 6px;
+    overflow-y: auto;
+    border-top: 1px solid #808080;
+    border-left: 1px solid #808080;
+    border-right: 1px solid #ffffff;
+    border-bottom: 1px solid #ffffff;
+}
+
+.message {
+    margin-bottom: 4px;
+    line-height: 1.4;
+}
+.message .sender {
+    font-weight: bold;
+    color: #000080;
+}
+.message .time {
+    color: #808080;
+    font-size: 10px;
+}
+.message .text {
+    margin-left: 4px;
+}
+
+.typing {
+    padding: 0 8px;
+    height: 18px;
+    color: #008080;
+    font-style: italic;
+    font-size: 11px;
+}
+
+#composer {
+    display: flex;
+    padding: 4px;
+    gap: 4px;
+    background: #c0c0c0;
+    border-top: 1px solid #808080;
+}
+#composer input {
+    background: white;
+    border-top: 1px solid #808080;
+    border-left: 1px solid #808080;
+    border-right: 1px solid #ffffff;
+    border-bottom: 1px solid #ffffff;
+    padding: 4px;
+    font-family: inherit;
+    font-size: inherit;
+    color: #000;
+}
+#composer #sender {
+    width: 110px;
+}
+#composer #text {
+    flex: 1;
+}
+#composer button {
+    background: #c0c0c0;
+    border-top: 2px solid #ffffff;
+    border-left: 2px solid #ffffff;
+    border-right: 2px solid #000000;
+    border-bottom: 2px solid #000000;
+    padding: 3px 14px;
+    font-family: inherit;
+    font-size: inherit;
+    cursor: pointer;
+    font-weight: bold;
+}
+#composer button:active {
+    border-top: 2px solid #000000;
+    border-left: 2px solid #000000;
+    border-right: 2px solid #ffffff;
+    border-bottom: 2px solid #ffffff;
+}
