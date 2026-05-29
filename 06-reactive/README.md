@@ -58,7 +58,7 @@ pipeline that turns the raw inputs into the final events SSE should deliver.
 ### Task 1 — Build the message pipeline
 
 **Failing tests:** `subscriberReceivesPostedMessage`, `messageTextIsTrimmed`,
-`blankMessagesAreDroppedAndStreamSurvives`
+`blankMessagesAreDroppedAndStreamSurvives`, `nullMessageTextIsDroppedAndStreamSurvives`
 
 `ChatResource#stream()` returns `Multi.createFrom().nothing()`. Subscribers connect, hear silence,
 and start to wonder if the server is still alive.
@@ -68,8 +68,10 @@ and produces a `Multi<Message>` where every emitted message:
 
 - has its `text` trimmed of leading and trailing whitespace,
 - has its `sentAt` set to a server-side timestamp,
-- has non-blank text — messages that are blank after trimming must be **dropped**, not
-  forwarded. Dropping one bad item must not stop later items from flowing.
+- has real, non-blank text — messages where `text` is missing, `null`, or blank after trimming
+  must be **dropped**, not forwarded. Dropping one bad item must not stop later items from
+  flowing (and remember: an uncaught exception in a Mutiny operator *terminates the whole
+  stream*, so all your subscribers will lose their connection).
 
 You may also want to log every message that passes through, for sanity.
 
@@ -78,7 +80,7 @@ You may also want to log every message that passes through, for sanity.
 ### Task 2 — Build the presence pipeline
 
 **Failing tests:** `joinEventIsBroadcastToSubscribers`,
-`invalidPresenceKindIsDroppedAndStreamSurvives`
+`invalidPresenceKindIsDroppedAndStreamSurvives`, `nullPresenceKindIsDroppedAndStreamSurvives`
 
 `PresenceResource#stream()` has the same problem as Task 1, on the presence stream.
 
@@ -88,8 +90,8 @@ and produces a `Multi<Presence>` where every emitted event:
 - has a `kind` parsed from the incoming string into the `PresenceKind` enum (`JOINED`,
   `TYPING`, or `LEFT`),
 - has its `at` set to a server-side timestamp,
-- is **dropped** if the incoming `kind` is anything other than one of those three values — and
-  one bad event must not stop later events from flowing.
+- is **dropped** if the incoming `kind` is missing, `null`, or anything other than one of those
+  three values — and one bad event must not stop later events from flowing.
 
 ---
 
@@ -118,4 +120,4 @@ Open http://localhost:8080.
 ./mvnw test
 ```
 
-Five tests fail on the unmodified code: three for Task 1, two for Task 2.
+Seven tests fail on the unmodified code: four for Task 1, three for Task 2.

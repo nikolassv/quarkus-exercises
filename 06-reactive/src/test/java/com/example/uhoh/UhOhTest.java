@@ -131,6 +131,44 @@ class UhOhTest {
         }
     }
 
+    @Test
+    void nullMessageTextIsDroppedAndStreamSurvives() throws InterruptedException {
+        AssertSubscriber<Message> sub = openStream(messages::stream);
+        try {
+            postRaw("/messages", "{\"sender\":\"frank\",\"text\":null}");
+            postMessage("frank", "I made it through");
+
+            sub.awaitItems(1, AWAIT);
+            Thread.sleep(200);
+            List<Message> items = sub.getItems();
+
+            assertThat(items)
+                    .as("a valid message posted after a null-text one should still arrive")
+                    .anyMatch(m -> "I made it through".equals(m.text()));
+            assertThat(items)
+                    .as("messages with null text should be dropped, not forwarded")
+                    .noneMatch(m -> m.text() == null);
+        } finally {
+            sub.cancel();
+        }
+    }
+
+    @Test
+    void nullPresenceKindIsDroppedAndStreamSurvives() throws InterruptedException {
+        AssertSubscriber<Presence> sub = openStream(presence::stream);
+        try {
+            postRaw("/presence", "{\"sender\":\"ghost\",\"kind\":null}");
+            postPresence("dave", "JOINED");
+
+            sub.awaitItems(1, AWAIT);
+            assertThat(sub.getItems())
+                    .as("a valid presence event after a null-kind one should still arrive")
+                    .anyMatch(p -> "dave".equals(p.sender()) && p.kind() == PresenceKind.JOINED);
+        } finally {
+            sub.cancel();
+        }
+    }
+
     private <T> AssertSubscriber<T> openStream(Supplier<Multi<T>> source) throws InterruptedException {
         AssertSubscriber<T> sub = source.get()
                 .subscribe().withSubscriber(AssertSubscriber.create(Long.MAX_VALUE));
@@ -158,6 +196,17 @@ class UhOhTest {
                 .body("{\"sender\":\"" + sender + "\",\"kind\":\"" + kind + "\"}")
                 .when()
                 .post("/presence")
+                .then()
+                .statusCode(202);
+    }
+
+    private void postRaw(String path, String jsonBody) {
+        given()
+                .baseUri(baseUri.toString())
+                .contentType("application/json")
+                .body(jsonBody)
+                .when()
+                .post(path)
                 .then()
                 .statusCode(202);
     }
