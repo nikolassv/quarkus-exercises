@@ -45,6 +45,8 @@ they subscribed.
 - `broadcaster.rawMessages()` — `Multi<RawMessage>` that fans out to every subscriber
 - `broadcaster.publishPresence(RawPresence raw)` / `broadcaster.rawPresence()` — same idea for
   presence events
+- `broadcaster.currentlyOnline()` — a `Collection<String>` snapshot of the senders who are
+  currently online (have JOINED and not yet LEFT)
 
 Both REST resources are already wired: `POST /messages` and `POST /presence` push into the
 broadcaster, and both SSE endpoints exist. **What's missing is the bit in between** — the
@@ -95,6 +97,25 @@ and produces a `Multi<Presence>` where every emitted event:
 
 ---
 
+### Task 3 — New arrivals see an empty room
+
+**Failing tests:** `newSubscriberSeesAlreadyOnlineUsers`, `newSubscriberDoesNotSeeUsersWhoLeft`
+
+Once Task 2 works, try this: open one browser window and let a few buddies join. Now open a
+*second* window. Its contact list is empty — it only fills up as *new* people join or type. Every
+buddy who was already online before you connected is invisible to you, even though the server
+knows perfectly well that they are there.
+
+That is the nature of the stream you are subscribed to: it is **hot**. It carries events from the
+moment you subscribe onwards — it does not replay the ones you missed. The live stream alone can
+never tell a newcomer who is *already* here.
+
+Make a freshly connected subscriber receive the current roster first, and then the live updates.
+The list of who is online right now is available to you; the events that follow should continue
+to flow exactly as before.
+
+---
+
 ### Manual verification
 
 Open `http://localhost:8080` in two browser windows.
@@ -103,6 +124,8 @@ Open `http://localhost:8080` in two browser windows.
 - Type without pressing Send — the other window should show *"X is typing..."* for a couple of
   seconds.
 - Close one window — the other should see that buddy disappear from the contact list.
+- Let a buddy join, then open a fresh window — the newcomer should see that buddy already in the
+  contact list (Task 3).
 
 
 ## Running the project
@@ -120,4 +143,4 @@ Open http://localhost:8080.
 ./mvnw test
 ```
 
-Seven tests fail on the unmodified code: four for Task 1, three for Task 2.
+Nine tests fail on the unmodified code: four for Task 1, three for Task 2, two for Task 3.
