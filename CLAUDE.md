@@ -31,8 +31,6 @@ quarkus-academy-examples/
 ├── 04-rest/
 ├── 05-persistence/
 ├── 06-reactive/
-├── 09-security/
-└── 10-ai/
 ```
 
 Directory numbering reflects course order. The list of topics is a draft and may change.
@@ -83,5 +81,3 @@ The CDI example has no hints at all. Participants have just completed the releva
 5. REST
 6. Persistence (Hibernate ORM + Panache)
 7. Reactive programming
-8. Security
-9. AI with LangChain4j
