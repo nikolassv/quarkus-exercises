@@ -103,11 +103,9 @@ class UhOhTest {
         try {
             postPresence("carol", "JOINED");
 
-            sub.awaitItems(1, AWAIT);
-            Presence p = sub.getItems().get(0);
-            assertThat(p.sender()).isEqualTo("carol");
-            assertThat(p.kind()).isEqualTo(PresenceKind.JOINED);
-            assertThat(p.at())
+            Presence carol = awaitItem(sub, p -> "carol".equals(p.sender()) && p.kind() == PresenceKind.JOINED);
+            assertThat(carol).as("the join event for carol should arrive").isNotNull();
+            assertThat(carol.at())
                     .as("the pipeline should stamp every presence event with a server-side timestamp")
                     .isNotNull();
         } finally {
@@ -122,10 +120,9 @@ class UhOhTest {
             postPresence("intruder", "BARGE_IN");
             postPresence("carol", "JOINED");
 
-            sub.awaitItems(1, AWAIT);
-            assertThat(sub.getItems())
+            assertThat(awaitItem(sub, p -> "carol".equals(p.sender()) && p.kind() == PresenceKind.JOINED))
                     .as("a valid presence event after a malformed one should still arrive")
-                    .anyMatch(p -> "carol".equals(p.sender()) && p.kind() == PresenceKind.JOINED);
+                    .isNotNull();
         } finally {
             sub.cancel();
         }
@@ -160,10 +157,46 @@ class UhOhTest {
             postRaw("/presence", "{\"sender\":\"ghost\",\"kind\":null}");
             postPresence("dave", "JOINED");
 
-            sub.awaitItems(1, AWAIT);
-            assertThat(sub.getItems())
+            assertThat(awaitItem(sub, p -> "dave".equals(p.sender()) && p.kind() == PresenceKind.JOINED))
                     .as("a valid presence event after a null-kind one should still arrive")
-                    .anyMatch(p -> "dave".equals(p.sender()) && p.kind() == PresenceKind.JOINED);
+                    .isNotNull();
+        } finally {
+            sub.cancel();
+        }
+    }
+
+    @Test
+    void newSubscriberSeesAlreadyOnlineUsers() throws InterruptedException {
+        // grace joins the room *before* our subscriber connects.
+        postPresence("grace", "JOINED");
+
+        AssertSubscriber<Presence> sub = openStream(presence::stream);
+        try {
+            assertThat(awaitItem(sub, p -> "grace".equals(p.sender()) && p.kind() == PresenceKind.JOINED))
+                    .as("a freshly connected subscriber should see users who were already online")
+                    .isNotNull();
+        } finally {
+            sub.cancel();
+        }
+    }
+
+    @Test
+    void newSubscriberDoesNotSeeUsersWhoLeft() throws InterruptedException {
+        // heidi joins and then leaves, all before our subscriber connects.
+        postPresence("heidi", "JOINED");
+        postPresence("heidi", "LEFT");
+        // ivan stays, so the subscriber has at least one event to await on.
+        postPresence("ivan", "JOINED");
+
+        AssertSubscriber<Presence> sub = openStream(presence::stream);
+        try {
+            assertThat(awaitItem(sub, p -> "ivan".equals(p.sender()) && p.kind() == PresenceKind.JOINED))
+                    .as("the still-present user should appear in the initial snapshot")
+                    .isNotNull();
+            // ivan is present, so the snapshot has been delivered; heidi must not be in it.
+            assertThat(sub.getItems())
+                    .as("a user who already left should not appear in the initial snapshot")
+                    .noneMatch(p -> "heidi".equals(p.sender()));
         } finally {
             sub.cancel();
         }
@@ -176,6 +209,22 @@ class UhOhTest {
         // in the broadcaster before any POST is published.
         Thread.sleep(150);
         return sub;
+    }
+
+    /**
+     * Polls the subscriber's received items until one matches, or the timeout elapses.
+     * Robust to other items arriving first (e.g. a presence snapshot of already-online users).
+     */
+    private <T> T awaitItem(AssertSubscriber<T> sub, java.util.function.Predicate<T> matcher) throws InterruptedException {
+        long deadline = System.currentTimeMillis() + AWAIT.toMillis();
+        while (System.currentTimeMillis() < deadline) {
+            T match = sub.getItems().stream().filter(matcher).findFirst().orElse(null);
+            if (match != null) {
+                return match;
+            }
+            Thread.sleep(50);
+        }
+        return null;
     }
 
     private void postMessage(String sender, String text) {
