@@ -16,7 +16,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 
 @QuarkusTest
-class StarfleetCommunicationServiceTest_Part1 {
+class StarfleetCommunicationServicePart1Test {
 
     @Inject
     CommunicationService service;
