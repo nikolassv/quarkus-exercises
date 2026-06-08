@@ -41,7 +41,7 @@ Work through the projects in order — the directory numbering reflects the cour
 - Docker (for dev services, e.g., databases)
 - Quarkus CLI (optional but recommended): https://quarkus.io/guides/cli-tooling
 
-All projects target **Quarkus 3.32.2** on **Java 21**.
+All projects target **Quarkus 3.36.1** on **Java 21**.
 
 ## Running a Project
 
