@@ -18,7 +18,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @QuarkusTest
-class StarfleetCommunicationServiceTest_Part2 {
+class StarfleetCommunicationServicePart2Test {
 
     @Inject
     CommunicationService service;
