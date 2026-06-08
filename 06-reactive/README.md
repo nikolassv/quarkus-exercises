@@ -127,6 +127,16 @@ Open `http://localhost:8080` in two browser windows.
 - Let a buddy join, then open a fresh window — the newcomer should see that buddy already in the
   contact list (Task 3).
 
+> **Testing with more than two windows?** Each window holds **two** long-lived SSE connections
+> (one for messages, one for presence). Over plain HTTP/1.1 — which is what a browser uses on
+> `http://localhost` — browsers allow only about **six concurrent connections per origin**. From
+> the third window on, those slots are exhausted, and the browser can no longer even send the
+> `POST` requests that publish messages and presence, so new windows appear "stuck" and stop
+> broadcasting. This is a property of SSE over HTTP/1.1, not of the application code. To test many
+> participants at once, open the extra windows in **different browsers** (each has its own
+> connection pool), or put the app behind HTTP/2. The same six-connection ceiling is why real
+> chat apps reach for WebSockets or HTTP/2 once they outgrow a couple of streams per page.
+
 
 ## Running the project
 
