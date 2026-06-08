@@ -34,7 +34,10 @@ public class PresenceResource {
     @Produces(MediaType.SERVER_SENT_EVENTS)
     @RestStreamElementType(MediaType.APPLICATION_JSON)
     public Multi<Presence> stream() {
-        return broadcaster.rawPresence()
+        Multi<RawPresence> currentlyOnline = Multi.createFrom().iterable(broadcaster.currentlyOnline())
+                .onItem().transform(sender -> new RawPresence(sender, PresenceKind.JOINED.name()));
+
+        return Multi.createBy().concatenating().streams(currentlyOnline, broadcaster.rawPresence())
                 .skip().where(rp -> rp == null
                         || rp.sender() == null
                         || rp.sender().isBlank()
