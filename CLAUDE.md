@@ -81,3 +81,4 @@ The CDI example has no hints at all. Participants have just completed the releva
 5. REST
 6. Persistence (Hibernate ORM + Panache)
 7. Reactive programming
+8. Native compilation (GraalVM native image)

@@ -14,6 +14,7 @@ The following topics are covered (subject to change):
 | `04-rest/`           | Building REST APIs                                 | BarkSquare                |
 | `05-persistence/`    | Persistence with Hibernate ORM and Panache         | The Grimoire Library      |
 | `06-reactive/`       | Reactive programming                               | UhOh Messenger            |
+| `07-native/`         | Native compilation (GraalVM native image)          | Wanneeikel Free Press     |
 
 ## How to Use This Repository
 
